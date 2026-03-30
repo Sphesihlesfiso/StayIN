@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  email String @unique
+  password String 
+  role Role @default(TENANT)
+  properties Property[]
+  comments Comment[]
+}
+enum Role {
+  LANDLORD
+  TENANT
+}
+
+model Property {
+  id Int @id @default(autoincrement())
+  name String
+  address String 
+  rent Int
+  deposit Int?
+  nsfasAccredited Boolean @default(false)
+  gas Int?
+  water Int?
+  electricity Int?
+  comments Comment[]
+  amenities Amenity[]
+  nearbyPlaces NearbyPlace[]
+  about String
+  rules String
+  landlordId Int
+  landlord User @relation(fields: [landlordId], references: [id])
+ 
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  content String
+  rating Float
+  propertyId Int
+  timestamp DateTime @default(now())
+  property Property @relation(fields: [propertyId], references: [id])
+  commenterId Int
+  user User @relation(fields: [commenterId], references: [id])
+}
+model Amenity {
+  id Int @id @default(autoincrement())
+  name String
+  propertyId Int
+  property Property @relation(fields: [propertyId], references: [id]) 
+}
+model NearbyPlace {
+  id Int @id @default(autoincrement())
+  name String
+  type String
+  distance Float
+  nearByPlaceId Int
+  property Property @relation(fields: [nearByPlaceId], references: [id])
+}
