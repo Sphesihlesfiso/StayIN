@@ -25,11 +25,19 @@ enum Role {
   LANDLORD
   TENANT
 }
+enum PropertyType {
+  SINGLE
+  SHARING
+  MALE_ONLY
+  FEMALE_ONLY
+  MALE_AND_FEMALE
+}
 
 model Property {
   id Int @id @default(autoincrement())
   name String
   address String 
+  propertyType PropertyType
   rent Int
   deposit Int?
   nsfasAccredited Boolean @default(false)
@@ -70,3 +78,5 @@ model NearbyPlace {
   nearByPlaceId Int
   property Property @relation(fields: [nearByPlaceId], references: [id])
 }
+//TODO:Add enums for property types (single,sharing,girls only).
+//TODO: Add fields for things in the room (bed ,desk, chair).
