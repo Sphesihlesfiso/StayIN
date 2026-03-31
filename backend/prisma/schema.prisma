@@ -28,9 +28,12 @@ enum Role {
 enum PropertyType {
   SINGLE
   SHARING
+}
+
+enum GenderRestriction {
   MALE_ONLY
   FEMALE_ONLY
-  MALE_AND_FEMALE
+  MIXED
 }
 
 model Property {
@@ -38,8 +41,11 @@ model Property {
   name String
   address String 
   propertyType PropertyType
-  rent Int
-  deposit Int?
+  town String
+  surburb String
+  genderRestriction GenderRestriction
+  rent Decimal @db.Decimal(10,2)
+  deposit Decimal ? @db.Decimal(10,2)
   nsfasAccredited Boolean @default(false)
   gas Int?
   water Int?
@@ -50,8 +56,12 @@ model Property {
   about String
   rules String
   landlordId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   landlord User @relation(fields: [landlordId], references: [id])
- 
+  @@index([rent])
+  @@index([propertyType])
+   
 }
 
 model Comment {
