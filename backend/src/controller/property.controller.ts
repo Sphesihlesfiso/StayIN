@@ -6,7 +6,6 @@ import {
   deletePropertyById,
 } from "../services/property.service";
 import { asyncHandler } from "../utils/asyncHandler";
-import prisma from "../config/db";
 
 export const fetchAllProperties = asyncHandler(
   async (req: Request, res: Response) => {
@@ -14,7 +13,6 @@ export const fetchAllProperties = asyncHandler(
     res.status(200).json(properties);
   },
 );
-
 export const getUniqueProperty = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
@@ -35,15 +33,13 @@ export const uploadProperty = asyncHandler(
     if (!propertyData || Object.keys(propertyData).length === 0) {
       return res.status(400).json({ message: "No input found" });
     }
-
-    const newProperty = await addProperty(propertyData);
+    await addProperty(propertyData);
     res.status(201).json({ message: "New property added." });
   },
 );
 export const deleteProperty = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    
     await deletePropertyById(id);
     res.status(202).json({ message: "Property has been deleted." });
   },
