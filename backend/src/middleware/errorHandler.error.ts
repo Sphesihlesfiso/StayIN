@@ -1,13 +1,16 @@
-// middleware/errorHandler.ts
-import { Request,Response,NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+
 export const errorHandler = (
-  err: Error,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   console.error(err);
-  res.status(500).json({ error: "Internal server error" });
+
+  const statusCode = err.statusCode || 500;
+
+  res.status(statusCode).json({
+    message: err.message || "Internal Server Error",
+  });
 };
-
-

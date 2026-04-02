@@ -4,6 +4,7 @@ import {
   getAllProperties,
   getPropertyById,
   deletePropertyById,
+  updateProperty,
 } from "../services/property.service";
 import { asyncHandler } from "../utils/asyncHandler";
 
@@ -42,5 +43,14 @@ export const deleteProperty = asyncHandler(
     const id = Number(req.params.id);
     await deletePropertyById(id);
     res.status(202).json({ message: "Property has been deleted." });
+  },
+);
+export const updatePropertyById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const data = req.body;
+    
+    const updatedProperty = await updateProperty(data, id);
+    res.json({ data:updatedProperty });
   },
 );

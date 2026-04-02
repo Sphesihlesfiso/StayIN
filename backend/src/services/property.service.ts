@@ -14,7 +14,12 @@ export const addProperty = async (data: Prisma.PropertyCreateInput) => {
   const newProperty = await prisma.property.create({ data });
   return newProperty;
 };
-export const deletePropertyById = async(id:number) => {
-  await prisma.property.delete( { where : { id } })
-
-}
+export const deletePropertyById = async (id: number) => {
+  await prisma.property.delete({ where: { id } });
+};
+export const updateProperty = async (
+  data: Prisma.PropertyUpdateInput,
+  id: number,
+) => {
+  return await prisma.property.update({ where: { id }, data });
+};

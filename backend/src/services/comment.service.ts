@@ -1,20 +1,44 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../config/db";
-import { asyncHandler } from "../utils/asyncHandler";
+
+import { AppError } from "../errors/errors";
+
 export const getAllComments = async () => {
   return await prisma.comment.findMany();
 };
+
 export const deleteComment = async (id: number) => {
-  await prisma.comment.delete({ where: { id } });
+  try {
+    console.log(id);
+    return await prisma.comment.delete({ where: { id } });
+  } catch (error) {
+    console.log(error);
+    throw new AppError("Comment not found", 404);
+  }
 };
-export const addCommnet = async (data: Prisma.CommentCreateInput) => {
-  return await prisma.comment.create({ data });
-  
+
+export const addComment = async (data: Prisma.CommentCreateInput) => {
+  try {
+    return await prisma.comment.create({ data });
+  } catch (error) {
+    console.log(error);
+    throw new AppError("Failed to create comment", 400);
+  }
 };
+
 export const updateComment = async (
   data: Prisma.CommentUpdateInput,
   id: number,
 ) => {
-  return await prisma.comment.update({ where: { id }, data });
-  
+  try {
+    const updatedComment = await prisma.comment.update({
+      where: { id },
+      data,
+    });
+
+    return updatedComment;
+  } catch (error) {
+    console.log(error);
+    throw new AppError("Comment to update not found", 404);
+  }
 };
