@@ -20,7 +20,7 @@ export const postComment = asyncHandler(async (req: Request, res: Response) => {
 export const deleteCommentById = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    console.log(id);
+    
     const deletedComment = await deleteComment(id);
     res.send(200).json({ success: true, data: deletedComment });
   },

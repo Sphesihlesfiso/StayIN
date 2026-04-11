@@ -1,25 +1,50 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../config/db";
-
+import { AppError } from "../errors/errors";
 export const getAllProperties = async () => {
-  const properties = await prisma.property.findMany();
-  return properties;
+  try {
+    const properties = await prisma.property.findMany();
+    return properties;
+  } catch (error) {
+    console.error(error);
+    throw new AppError("Failed to get all properties", 404);
+  }
 };
 
 export const getPropertyById = async (id: number) => {
-  const property = await prisma.property.findUnique({ where: { id } });
-  return property;
+  try {
+    const property = await prisma.property.findUnique({ where: { id } });
+    return property;
+  } catch (error) {
+    console.error(error);
+    throw new AppError("Failed to get  property by id", 404);
+  }
 };
 export const addProperty = async (data: Prisma.PropertyCreateInput) => {
-  const newProperty = await prisma.property.create({ data });
-  return newProperty;
+  try {
+    const newProperty = await prisma.property.create({ data });
+    return newProperty;
+  } catch (error) {
+    console.error(error);
+    throw new AppError("Failed to add property", 400);
+  }
 };
 export const deletePropertyById = async (id: number) => {
-  await prisma.property.delete({ where: { id } });
+  try {
+    await prisma.property.delete({ where: { id } });
+  } catch (error) {
+    console.error(error);
+    throw new AppError("Failed to delete property with id " + id, 500);
+  }
 };
 export const updateProperty = async (
   data: Prisma.PropertyUpdateInput,
   id: number,
 ) => {
-  return await prisma.property.update({ where: { id }, data });
+  try {
+    return await prisma.property.update({ where: { id }, data });
+  } catch (error) {
+    console.error(error);
+    throw new AppError("Failed to update property with id " + id, 500);
+  }
 };

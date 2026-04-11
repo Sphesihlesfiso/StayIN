@@ -9,10 +9,10 @@ export const getAllComments = async () => {
 
 export const deleteComment = async (id: number) => {
   try {
-    console.log(id);
+   
     return await prisma.comment.delete({ where: { id } });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new AppError("Comment not found", 404);
   }
 };
@@ -21,7 +21,7 @@ export const addComment = async (data: Prisma.CommentCreateInput) => {
   try {
     return await prisma.comment.create({ data });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new AppError("Failed to create comment", 400);
   }
 };
@@ -38,7 +38,7 @@ export const updateComment = async (
 
     return updatedComment;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new AppError("Comment to update not found", 404);
   }
 };
