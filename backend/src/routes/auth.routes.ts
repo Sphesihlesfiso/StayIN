@@ -1,5 +1,3 @@
-import prisma from "../config/db";
-
 import { Router } from "express";
 import { loginUser, registerUser } from "../controller/auth.controller";
 const router =Router();

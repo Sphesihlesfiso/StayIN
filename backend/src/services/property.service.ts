@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../config/db";
+
 import { AppError } from "../errors/errors";
+import prisma  from "../config/db";
 export const getAllProperties = async () => {
   try {
     const properties = await prisma.property.findMany();
