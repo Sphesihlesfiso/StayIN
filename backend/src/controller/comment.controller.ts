@@ -6,7 +6,7 @@ import {
   getAllComments,
 } from "../services/comment.service";
 import { Request, Response } from "express";
-
+//Add a message key to send to the user so the frontend can know
 export const getAllComents = asyncHandler(
   async (req: Request, res: Response) => {
     const comments = await getAllComments();
@@ -20,14 +20,14 @@ export const postComment = asyncHandler(async (req: Request, res: Response) => {
 export const deleteCommentById = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    
+
     const deletedComment = await deleteComment(id);
     res.send(200).json({ success: true, data: deletedComment });
   },
 );
 export const updateCommentById = asyncHandler(
   async (req: Request, res: Response) => {
-    const  data  = req.body;
+    const data = req.body;
     const updatedComment = await updateComment(data, Number(req.body.id));
     res.status(200).json({ success: true, data: updatedComment });
   },
