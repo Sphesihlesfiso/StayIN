@@ -1,22 +1,17 @@
-
 import prisma from "../config/db";
 import { Prisma } from "@prisma/client";
-import { AppError } from '../errors/errors';
-export const deleteUser = async (data: Prisma.UserCreateInput, id:number) => {
-  
+import { handlePrismaError } from "../utils/handlePrismaError";
+export const deleteUser = async (id: number) => {
   try {
-    await prisma.user.delete({ where: { id: id } });
+    await prisma.user.delete({ where: { id } });
   } catch (error) {
-    console.error(error);
-    throw Error("Failed to delete user account");
+    handlePrismaError(error);
   }
 };
-export const updateUser = async (data:Prisma.UserUpdateInput,id:number) =>{
+export const updateUser = async (id: number,data: Prisma.UserUpdateInput, ) => {
   try {
-    await prisma.user.update({where:{id:id},data})
+    return await prisma.user.update({ where: { id }, data });
   } catch (error) {
-    console.error(error);
-    throw new AppError("Failed to update user info",500);
-    
+    handlePrismaError(error);
   }
-}
+};

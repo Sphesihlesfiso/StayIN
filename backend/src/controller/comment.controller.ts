@@ -6,29 +6,33 @@ import {
   getAllComments,
 } from "../services/comment.service";
 import { Request, Response } from "express";
-//Add a message key to send to the user so the frontend can know
+import { successResponse } from "../utils/apiResponce";
+
 export const getAllComents = asyncHandler(
   async (req: Request, res: Response) => {
     const comments = await getAllComments();
-    res.status(200).json({ success: true, data: comments });
+    res.status(200).json(successResponse(comments, "Comments fetched"));
   },
 );
+
 export const postComment = asyncHandler(async (req: Request, res: Response) => {
   const comment = await addComment(req.body);
-  res.status(201).json({ success: true, data: comment });
+  res.status(201).json(successResponse(comment, "Comment created"));
 });
+
 export const deleteCommentById = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-
-    const deletedComment = await deleteComment(id);
-    res.send(200).json({ success: true, data: deletedComment });
+    await deleteComment(id);
+    res.status(204).send();
   },
 );
+
 export const updateCommentById = asyncHandler(
   async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
     const data = req.body;
-    const updatedComment = await updateComment(data, Number(req.body.id));
-    res.status(200).json({ success: true, data: updatedComment });
+    const updatedComment = await updateComment(id, data);
+    res.status(200).json(successResponse(updatedComment, "Comment updated"));
   },
 );

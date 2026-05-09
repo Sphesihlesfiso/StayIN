@@ -4,7 +4,7 @@ import prisma from "../config/db";
 import { AppError } from "../errors/errors";
 
 export const getAllComments = async () => {
-  
+
   return await prisma.comment.findMany();
 };
 
@@ -27,10 +27,7 @@ export const addComment = async (data: Prisma.CommentCreateInput) => {
   }
 };
 
-export const updateComment = async (
-  data: Prisma.CommentUpdateInput,
-  id: number,
-) => {
+export const updateComment = async (id: number, data: Prisma.CommentUpdateInput) => {
   try {
     const updatedComment = await prisma.comment.update({
       where: { id },
