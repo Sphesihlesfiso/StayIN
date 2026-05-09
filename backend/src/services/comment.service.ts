@@ -4,6 +4,7 @@ import prisma from "../config/db";
 import { AppError } from "../errors/errors";
 
 export const getAllComments = async () => {
+  
   return await prisma.comment.findMany();
 };
 

@@ -1,51 +1,45 @@
 import { Prisma } from "@prisma/client";
-
 import { AppError } from "../errors/errors";
-import prisma  from "../config/db";
+import { handlePrismaError } from "../utils/handlePrismaError";
+import prisma from "../config/db";
+
 export const getAllProperties = async () => {
   try {
-    const properties = await prisma.property.findMany();
-    return properties;
+    return await prisma.property.findMany();
   } catch (error) {
-    console.error(error);
-    throw new AppError("Failed to get all properties", 404);
+    throw handlePrismaError(error);
   }
 };
 
 export const getPropertyById = async (id: number) => {
-  try {
-    const property = await prisma.property.findUnique({ where: { id } });
-    return property;
-  } catch (error) {
-    console.error(error);
-    throw new AppError("Failed to get  property by id", 404);
-  }
+  const property = await prisma.property.findUnique({ where: { id } });
+  if (!property) throw new AppError("Property not found", 404);
+  return property;
 };
+
 export const addProperty = async (data: Prisma.PropertyCreateInput) => {
   try {
-    const newProperty = await prisma.property.create({ data });
-    return newProperty;
+    return await prisma.property.create({ data });
   } catch (error) {
-    console.error(error);
-    throw new AppError("Failed to add property", 400);
+    throw handlePrismaError(error);
   }
 };
+
 export const deletePropertyById = async (id: number) => {
   try {
     await prisma.property.delete({ where: { id } });
   } catch (error) {
-    console.error(error);
-    throw new AppError("Failed to delete property with id " + id, 500);
+    throw handlePrismaError(error);
   }
 };
+
 export const updateProperty = async (
-  data: Prisma.PropertyUpdateInput,
   id: number,
+  data: Prisma.PropertyUpdateInput,
 ) => {
   try {
     return await prisma.property.update({ where: { id }, data });
   } catch (error) {
-    console.error(error);
-    throw new AppError("Failed to update property with id " + id, 500);
+    throw handlePrismaError(error);
   }
 };
