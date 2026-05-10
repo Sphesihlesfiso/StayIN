@@ -17,6 +17,7 @@ export const handlePrismaError = (error: unknown) => {
     }
   }
   if (error instanceof Prisma.PrismaClientValidationError) {
+    console.log(error)
     throw new AppError("Invalid data provided", 400);
   }
   throw new AppError("Internal server error", 500);

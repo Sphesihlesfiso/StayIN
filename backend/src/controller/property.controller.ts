@@ -1,3 +1,4 @@
+import { safeParse } from './../../node_modules/zod/src/v4/classic/parse';
 import { Request, Response } from "express";
 import {
   addProperty,
@@ -7,11 +8,14 @@ import {
   updateProperty,
 } from "../services/property.service";
 import { asyncHandler } from "../utils/asyncHandler";
-import { successResponse, errorResponse } from "../utils/apiResponce";
+import { successResponse, errorResponse, validationError } from "../utils/apiResponce";
+
 import {
   CreatePropertyInput,
   createPropertySchema,
+  updatePropertySchema,
 } from "../../schema/property.schema";
+import { property } from 'zod';
 export const fetchAllProperties = asyncHandler(
   async (req: Request, res: Response) => {
     const properties = await getAllProperties();
@@ -34,7 +38,7 @@ export const uploadProperty = asyncHandler(
     if (!propertyData.success) {
       return res
         .status(400)
-        .json(errorResponse(propertyData.error.message));
+        .json(validationError(propertyData.error.issues));
     }
     const newProperty = await addProperty(propertyData.data);
     res.status(201).json(successResponse(newProperty, "Property created"));
@@ -52,8 +56,12 @@ export const deleteProperty = asyncHandler(
 export const updatePropertyById = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    const data = req.body;
-    const updatedProperty = await updateProperty(id, data);
+    
+    const updated = updatePropertySchema.safeParse(req.body);
+    if (!updated.success){
+      return res.status(400).json(validationError(updated.error.issues))
+    }
+    const updatedProperty = await updateProperty(id, updated.data);
     res.status(200).json(successResponse(updatedProperty, "Property updated"));
   },
 );

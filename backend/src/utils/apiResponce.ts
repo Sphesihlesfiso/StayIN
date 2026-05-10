@@ -1,4 +1,3 @@
-
 export const successResponse = (data: unknown, message = "Success") => ({
   success: true,
   message,
@@ -8,5 +7,11 @@ export const successResponse = (data: unknown, message = "Success") => ({
 export const errorResponse = (message: string) => ({
   success: false,
   message,
+  data: null,
+});
+export const validationError = (errors: object) => ({
+  success: false,
+  message:"Input validation Failed",
+  errors,
   data: null,
 });

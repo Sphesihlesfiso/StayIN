@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { AppError } from "../errors/errors";
 import { handlePrismaError } from "../utils/handlePrismaError";
 import prisma from "../config/db";
-import { CreatePropertyInput } from "../../schema/property.schema";
+import { CreatePropertyInput,UpdatePropertyInput } from "../../schema/property.schema";
 
 export const getAllProperties = async () => {
   try {
@@ -36,7 +36,7 @@ export const deletePropertyById = async (id: number) => {
 
 export const updateProperty = async (
   id: number,
-  data: Prisma.PropertyUpdateInput,
+  data: UpdatePropertyInput,
 ) => {
   try {
     return await prisma.property.update({ where: { id }, data });

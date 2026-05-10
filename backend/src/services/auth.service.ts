@@ -4,15 +4,15 @@ import bcrypt from "bcrypt-ts";
 import { error } from "console";
 import { generateWebTokens } from "../utils/generateTokens";
 import { handlePrismaError } from "../utils/handlePrismaError";
+import { CreateUserInput } from "../../schema/user.schema";
+import { successResponse } from "../utils/apiResponce";
+import { AppError } from "../errors/errors";
 //TODO :Proper input validation and error handling and redirection.
 //TODO :Proper authorisation and o-auth.
-export const signUp = async (data: Prisma.UserCreateInput) => {
-  const email = data.email;
-  const password = data.password;
-  const username = data.username;
+export const signUp = async (data: CreateUserInput) => {
+  const { username,email, password } = data;
   try {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) throw Error("User already exist");
+   
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
       data: {
@@ -21,13 +21,16 @@ export const signUp = async (data: Prisma.UserCreateInput) => {
         password: hashedPassword,
       },
     });
-    if (newUser) return "User created successfully.";
+    
+    return newUser;
   } catch (error) {
     handlePrismaError(error)
   }
 };
-export const signIn = async (email: string, password: string) => {
+export const signIn = async (data:CreateUserInput) => {
+  const {email,password}=data
   const user = await prisma.user.findUnique({ where: { email } });
+  
   if (user) {
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {

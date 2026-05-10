@@ -13,7 +13,7 @@ export const deleteComment = async (id: number) => {
    
     return await prisma.comment.delete({ where: { id } });
   } catch (error) {
-    console.error(error);
+    
     throw new AppError("Comment not found", 404);
   }
 };
