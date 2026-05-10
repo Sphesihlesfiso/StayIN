@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import bcrypt from "bcrypt-ts";
 import { error } from "console";
 import { generateWebTokens } from "../utils/generateTokens";
+import { handlePrismaError } from "../utils/handlePrismaError";
 //TODO :Proper input validation and error handling and redirection.
 //TODO :Proper authorisation and o-auth.
 export const signUp = async (data: Prisma.UserCreateInput) => {
@@ -20,10 +21,9 @@ export const signUp = async (data: Prisma.UserCreateInput) => {
         password: hashedPassword,
       },
     });
-    if (newUser) return "User created successfulley.";
+    if (newUser) return "User created successfully.";
   } catch (error) {
-    console.error(error);
-    throw Error("Failed to search if user exist or not in db.");
+    handlePrismaError(error)
   }
 };
 export const signIn = async (email: string, password: string) => {
@@ -44,7 +44,7 @@ export const signOut = async (userId: number) => {
   try {
     
   } catch (error) {
-    console.error(error);
+  
     throw Error("Failed to logout user.");
   }
 };

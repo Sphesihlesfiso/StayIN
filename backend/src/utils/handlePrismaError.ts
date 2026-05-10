@@ -8,6 +8,7 @@ export const handlePrismaError = (error: unknown) => {
         throw new AppError("Record not found", 404);
       case "P2002":
         throw new AppError("Duplicate entry", 409);
+    
       case "P2003":
         throw new AppError("Related record not found", 400);
 

@@ -7,12 +7,14 @@ export const deleteUserAccount = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     await deleteUser(id);
-    res.status(204);
+    res.status(204).send();
   },
 );
-export const updateUserInfo =asyncHandler(async(req:Request,res:Response)=>{
-    const data=req.body
+export const updateUserInfo = asyncHandler(
+  async (req: Request, res: Response) => {
+    const data = req.body;
     const id = Number(req.params.id);
-    await updateUser(id,data)
-    res.status(200).json(successResponse(data,"Updated user info."))
-})
+    await updateUser(id, data);
+    res.status(200).json(successResponse(data, "Updated user info."));
+  },
+);

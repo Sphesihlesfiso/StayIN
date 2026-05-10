@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { AppError } from "../errors/errors";
 import { handlePrismaError } from "../utils/handlePrismaError";
 import prisma from "../config/db";
+import { CreatePropertyInput } from "../../schema/property.schema";
 
 export const getAllProperties = async () => {
   try {
@@ -17,7 +18,7 @@ export const getPropertyById = async (id: number) => {
   return property;
 };
 
-export const addProperty = async (data: Prisma.PropertyCreateInput) => {
+export const addProperty = async (data: CreatePropertyInput) => {
   try {
     return await prisma.property.create({ data });
   } catch (error) {

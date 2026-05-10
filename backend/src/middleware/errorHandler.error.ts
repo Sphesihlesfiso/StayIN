@@ -1,16 +1,17 @@
-import { NextFunction, Request, Response } from "express";
-
+// middleware/errorHandler.ts
+import { Request, Response, NextFunction } from "express";
+import { AppError } from "../errors/errors";
+import { errorResponse } from "../utils/apiResponce";
 export const errorHandler = (
-  err: any,
+  error: Error,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  console.error(err);
+  if (error instanceof AppError) {
+    return res.status(error.statusCode).json(errorResponse(error.message));
+  }
 
-  const statusCode = err.statusCode || 500;
-
-  res.status(statusCode).json({
-    message: err.message || "Internal Server Error",
-  });
+  // unexpected error
+  return res.status(500).json(errorResponse("Internal server error"));
 };

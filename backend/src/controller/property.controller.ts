@@ -7,8 +7,11 @@ import {
   updateProperty,
 } from "../services/property.service";
 import { asyncHandler } from "../utils/asyncHandler";
-import { successResponse,errorResponse } from "../utils/apiResponce";
-
+import { successResponse, errorResponse } from "../utils/apiResponce";
+import {
+  CreatePropertyInput,
+  createPropertySchema,
+} from "../../schema/property.schema";
 export const fetchAllProperties = asyncHandler(
   async (req: Request, res: Response) => {
     const properties = await getAllProperties();
@@ -26,11 +29,14 @@ export const getUniqueProperty = asyncHandler(
 
 export const uploadProperty = asyncHandler(
   async (req: Request, res: Response) => {
-    const propertyData = req.body;
-    if (!propertyData || Object.keys(propertyData).length === 0) {
-      return res.status(400).json(errorResponse("No input found"));
+    const propertyData = createPropertySchema.safeParse(req.body);
+
+    if (!propertyData.success) {
+      return res
+        .status(400)
+        .json(errorResponse(propertyData.error.message));
     }
-    const newProperty = await addProperty(propertyData);
+    const newProperty = await addProperty(propertyData.data);
     res.status(201).json(successResponse(newProperty, "Property created"));
   },
 );
@@ -39,7 +45,7 @@ export const deleteProperty = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     await deletePropertyById(id);
-    res.status(204);
+    res.status(204).send();
   },
 );
 

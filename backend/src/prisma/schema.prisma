@@ -50,8 +50,8 @@ model Property {
   createdAt         DateTime          @default(now())
   genderRestriction GenderRestriction
   propertyType      PropertyType
-  updatedAt         DateTime
-  surburb           String
+  updatedAt         DateTime @updatedAt
+  suburb           String
   town              String
   Amenity           Amenity[]
   Comment           Comment[]
