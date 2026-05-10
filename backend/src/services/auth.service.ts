@@ -4,9 +4,9 @@ import bcrypt from "bcrypt-ts";
 import { error } from "console";
 import { generateWebTokens } from "../utils/generateTokens";
 import { handlePrismaError } from "../utils/handlePrismaError";
-import { CreateUserInput } from "../../schema/user.schema";
-import { successResponse } from "../utils/apiResponce";
-import { AppError } from "../errors/errors";
+import { CreateUserInput,} from '../../schema/user.schema';
+import { LoginUserInput } from "../../schema/auth.schema";
+
 //TODO :Proper input validation and error handling and redirection.
 //TODO :Proper authorisation and o-auth.
 export const signUp = async (data: CreateUserInput) => {
@@ -27,7 +27,7 @@ export const signUp = async (data: CreateUserInput) => {
     handlePrismaError(error)
   }
 };
-export const signIn = async (data:CreateUserInput) => {
+export const signIn = async (data:LoginUserInput) => {
   const {email,password}=data
   const user = await prisma.user.findUnique({ where: { email } });
   

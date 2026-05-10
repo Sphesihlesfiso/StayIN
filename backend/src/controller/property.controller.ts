@@ -15,7 +15,7 @@ import {
   createPropertySchema,
   updatePropertySchema,
 } from "../../schema/property.schema";
-import { property } from 'zod';
+
 export const fetchAllProperties = asyncHandler(
   async (req: Request, res: Response) => {
     const properties = await getAllProperties();
@@ -33,14 +33,14 @@ export const getUniqueProperty = asyncHandler(
 
 export const uploadProperty = asyncHandler(
   async (req: Request, res: Response) => {
-    const propertyData = createPropertySchema.safeParse(req.body);
+    const parsed = createPropertySchema.safeParse(req.body);
 
-    if (!propertyData.success) {
+    if (!parsed.success) {
       return res
         .status(400)
-        .json(validationError(propertyData.error.issues));
+        .json(validationError(parsed.error.issues));
     }
-    const newProperty = await addProperty(propertyData.data);
+    const newProperty = await addProperty(parsed.data);
     res.status(201).json(successResponse(newProperty, "Property created"));
   },
 );
@@ -57,11 +57,11 @@ export const updatePropertyById = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     
-    const updated = updatePropertySchema.safeParse(req.body);
-    if (!updated.success){
-      return res.status(400).json(validationError(updated.error.issues))
+    const parsed = updatePropertySchema.safeParse(req.body);
+    if (!parsed.success){
+      return res.status(400).json(validationError(parsed.error.issues))
     }
-    const updatedProperty = await updateProperty(id, updated.data);
-    res.status(200).json(successResponse(updatedProperty, "Property updated"));
+    const updatedProperty = await updateProperty(id, parsed.data);
+    res.status(200).json(successResponse(updatedProperty, "Property parsed"));
   },
 );

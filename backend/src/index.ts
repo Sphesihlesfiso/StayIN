@@ -6,7 +6,9 @@ import propertyRoutes from "./routes/property.routes";
 import commentsRoutes from "./routes/comment.routes";
 import authRoutes from "./routes/auth.routes";
 import loginRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes"
 import { errorHandler } from "./middleware/errorHandler.error";
+
 configDotenv();
 const Port = process.env.PORT || 3000;
 const app = express();
@@ -19,6 +21,7 @@ app.use("/property", propertyRoutes);
 app.use("/login", loginRoutes);
 app.use("/comment", commentsRoutes);
 app.use("/auth", authRoutes);
+app.use("/user",userRoutes)
 app.use(errorHandler);
 app.listen(Port, () => {
   console.log(`Server is running on port ${Port}`);
