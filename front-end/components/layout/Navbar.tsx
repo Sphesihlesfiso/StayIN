@@ -7,7 +7,7 @@ export default function Navbar() {
     <>
       <header className="flex flex-row justify-between align-middle border-b-2 p-1.5">
         <div className="flex flex-row justify-between">
-          <h1 className="p-0.5 font-extrabold">StayIn</h1>
+          <h1 className="p-0.5 font-extrabold ">StayIn</h1>
         </div>
         <div className="flex flex-row">
           <div className="mx-0.5">
