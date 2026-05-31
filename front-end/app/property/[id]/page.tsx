@@ -17,10 +17,21 @@ export default function PropertyDetailsPage() {
       <h2>{property[0].town}
 
       </h2>
-      <p>Details for property {id} will go here.</p>
       <div>
         <PricingBreakDown/>
         <LandLordCard/>
+        <h1>House Rules</h1>
+        <ul>
+          <li>{property[0].rules}</li>
+        </ul>
+        <h1>About this place</h1>
+        <p>{property[0].about}</p>
+        <h1>
+          <p>Amenities</p>
+          <ul>
+          
+          </ul>
+        </h1>
         <CommentCard/>
       </div>
     </div>

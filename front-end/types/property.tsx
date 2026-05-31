@@ -1,3 +1,5 @@
+import { Amneity } from "./amenity"
+import { Comment } from "./comment"
 
 export type PropertyType = "SINGLE" | "SHARING"
 export type GenderRestriction = "MALE_ONLY" | "FEMALE_ONLY" | "MIXED"
@@ -21,5 +23,6 @@ export type Property = {
   propertyType: PropertyType
   createdAt: string
   updatedAt: string
+  amenities: Amneity[]
+  comments:Comment[]
 }
-

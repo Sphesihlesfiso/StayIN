@@ -1,4 +1,4 @@
-import { Property } from "@/types/property"
+import { Property } from "@/types/property";
 
 export const mockProperties: Property[] = [
   {
@@ -20,6 +20,14 @@ export const mockProperties: Property[] = [
     propertyType: "SINGLE",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    amenities: [
+      { id: 1, name: "WiFi", propertyId: 1 },
+      { id: 2, name: "Parking", propertyId: 1 },
+    ],
+    comments: [
+      { id: 1, content: "Great location near campus!", rating: 5, commenterId: 101, propertyId: 1 },
+      { id: 2, content: "Rooms are spacious and clean.", rating: 4, commenterId: 102, propertyId: 1 },
+    ],
   },
   {
     id: 2,
@@ -40,6 +48,13 @@ export const mockProperties: Property[] = [
     propertyType: "SHARING",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    amenities: [
+      { id: 3, name: "Study Room", propertyId: 2 },
+      { id: 4, name: "Laundry", propertyId: 2 },
+    ],
+    comments: [
+      { id: 3, content: "Affordable and cozy.", rating: 4, commenterId: 103, propertyId: 2 },
+    ],
   },
   {
     id: 3,
@@ -60,6 +75,14 @@ export const mockProperties: Property[] = [
     propertyType: "SHARING",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    amenities: [
+      { id: 5, name: "WiFi", propertyId: 3 },
+      { id: 6, name: "Parking", propertyId: 3 },
+      { id: 7, name: "Laundry", propertyId: 3 },
+    ],
+    comments: [
+      { id: 4, content: "Amazing views!", rating: 5, commenterId: 104, propertyId: 3 },
+    ],
   },
   {
     id: 4,
@@ -80,6 +103,12 @@ export const mockProperties: Property[] = [
     propertyType: "SINGLE",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    amenities: [
+      { id: 8, name: "Study Room", propertyId: 4 },
+    ],
+    comments: [
+      { id: 5, content: "Good for budget living.", rating: 3, commenterId: 105, propertyId: 4 },
+    ],
   },
   {
     id: 5,
@@ -100,6 +129,13 @@ export const mockProperties: Property[] = [
     propertyType: "SINGLE",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    amenities: [
+      { id: 9, name: "WiFi", propertyId: 5 },
+      { id: 10, name: "Parking", propertyId: 5 },
+    ],
+    comments: [
+      { id: 6, content: "Love the eco-friendly vibe.", rating: 5, commenterId: 106, propertyId: 5 },
+    ],
   },
   {
     id: 6,
@@ -120,6 +156,12 @@ export const mockProperties: Property[] = [
     propertyType: "SHARING",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    amenities: [
+      { id: 11, name: "Laundry", propertyId: 6 },
+    ],
+    comments: [
+      { id: 7, content: "Peaceful environment.", rating: 4, commenterId: 107, propertyId: 6 },
+    ],
   },
   {
     id: 7,
@@ -140,6 +182,13 @@ export const mockProperties: Property[] = [
     propertyType: "SINGLE",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    amenities: [
+      { id: 12, name: "WiFi", propertyId: 7 },
+      { id: 13, name: "Parking", propertyId: 7 },
+    ],
+    comments: [
+      { id: 8, content: "Beautiful sunsets every evening.", rating: 5, commenterId: 108, propertyId: 7 },
+    ],
   },
   {
     id: 8,
@@ -160,45 +209,10 @@ export const mockProperties: Property[] = [
     propertyType: "SHARING",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 9,
-    name: "Garden Cottages",
-    address: "19 Plein Street",
-    rent: 3900,
-    deposit: 1800,
-    nsfasAccredited: true,
-    gas: 25,
-    water: 60,
-    electricity: null,
-    about: "Cozy cottages with gardens.",
-    rules: "Pets allowed.",
-    landlordId: 45,
-    suburb: "Garden",
-    town: "Stellenbosch",
-    genderRestriction: "MIXED",
-    propertyType: "SINGLE",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 10,
-    name: "City Center Rooms",
-    address: "1 Andringa Street",
-    rent: 2800,
-    deposit: 1200,
-    nsfasAccredited: false,
-    gas: null,
-    water: null,
-    electricity: 50,
-    about: "Rooms in the heart of the city.",
-    rules: "No overnight guests.",
-    landlordId: 50,
-    suburb: "City Center",
-    town: "Stellenbosch",
-    genderRestriction: "FEMALE_ONLY",
-    propertyType: "SHARING",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-]
+    amenities: [
+      { id: 14, name: "Study Room", propertyId: 8 },
+    ],
+    comments: [
+      { id: 9, content: "Perfect for techies.", rating: 4, commenterId: 109, propertyId: 8 },
+    ],
+  }]
