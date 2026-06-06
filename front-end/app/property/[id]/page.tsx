@@ -2,73 +2,101 @@
 
 import { useParams } from "next/navigation"
 import { mockProperties } from "@/public/assetts/assetts"
-import { Badge } from "@/components/ui/badge"
-import { CommentCard } from "@/components/CommentCard"
-import { LandLordCard } from "@/components/LandLordCard"
-import PricingBreakDown from "@/components/PricingBreakDown"
 import { Card, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { LocateFixedIcon, LocateIcon, WashingMachine, Wifi } from "lucide-react"
 import { BadgeCard } from "@/components/BadgeCard"
-import { title } from "process"
+import { ReviewCard } from "@/components/ReviewCard"
+import { LandLordCard } from "@/components/LandLordCard"
+import PricingBreakDown from "@/components/PricingBreakDown"
+import { LocateFixedIcon, WashingMachine, Wifi, Shield } from "lucide-react"
+
 export default function PropertyDetailsPage() {
   const { id } = useParams()
   const [property] = mockProperties!.filter((p) => p.id == Number(id))
 
   return (
-    <main className="p-1.5">
-      <div className="grid gap-2 grid-cols-1 ">
-        <Card>
-          <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
-          <img
-            src="https://avatar.vercel.sh/shadcn1"
-            alt="Event cover"
-            className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
-          />
-          <CardFooter>
-            <Button className="w-full">
-              <LocateFixedIcon /> View on map
-            </Button>
-          </CardFooter>
-        </Card>
-        <div className="flex flex-col font-bold">
-          <h1 className="">Private Backroom in Idas Vallei</h1>
-          <h2>Cape Town</h2>
-        </div>
-        <div>
-          <LandLordCard></LandLordCard>
-        </div>
-        <div>
-          <h2 className="font-bold">House Rules</h2>
-          <ul>
-            <li>No Smoking indoors</li>
-          </ul>
-        </div>
-        <div className="">
-          <h1 className="font-bold">About this place</h1>
-          <p>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ducimus,
-            ullam quia quisquam sapiente assumenda corrupti obcaecati odit iure
-            nulla id aliquid ipsa blanditiis laborum reprehenderit magni error
-            quos saepe animi.
-          </p>
-        </div>
-        <div>
-          <BadgeCard title="Amenities" variant="ghost" />
-        </div>
-        <div>
-          <BadgeCard title="Loadshedding readiness" variant="outline" />
-        </div>
-        <div>
-          <BadgeCard title="Security" variant="outline" />
-        </div>
-        <div>
-          <h1 className="font-bold p-1.5">
-            What previos tenants had to say
-            <CommentCard/>
-          </h1>
-        </div>
+    <main className="mx-auto w-full space-y-6 p-4">
+      {/* Cover Image */}
+      <Card className="relative overflow-hidden">
+        <div className="absolute inset-0 z-30 bg-black/35" />
+        <img
+          src="https://avatar.vercel.sh/shadcn1"
+          alt="Property cover"
+          className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
+        />
+        <CardFooter>
+          <Button className="w-full">
+            <LocateFixedIcon className="mr-2" /> View on map
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {/* Title + Location */}
+      <div className="space-y-1">
+        <h1 className="text-xl font-bold">Private Backroom in Idas Vallei</h1>
+        <h2 className="text-gray-600">Cape Town</h2>
       </div>
+
+      {/* Landlord */}
+      <LandLordCard  />
+
+      {/* House Rules */}
+      <section>
+        <h2 className="mb-2 text-lg font-bold">House Rules</h2>
+        <ul className="list-inside list-disc text-gray-700">
+          <li>No Smoking indoors</li>
+        </ul>
+      </section>
+
+      {/* About */}
+      <section>
+        <h2 className="mb-2 text-lg font-bold">About this place</h2>
+        <p className="text-gray-700">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus,
+          ullam quia quisquam sapiente assumenda corrupti obcaecati odit iure
+          nulla id aliquid ipsa blanditiis laborum reprehenderit magni error
+          quos saepe animi.
+        </p>
+      </section>
+
+      {/* Amenities */}
+      <section>
+        <h2 className="mb-2 text-lg font-bold">Amenities</h2>
+        <div className="flex flex-wrap gap-3">
+          <BadgeCard title="Wifi" variant="ghost" icon={Wifi} label="Wifi" />
+          <BadgeCard
+            title="Laundry"
+            variant="outline"
+            icon={WashingMachine}
+            label="Washing Machine"
+          />
+          <BadgeCard
+            title="Security"
+            variant="outline"
+            icon={Shield}
+            label="CCTV"
+          />
+        </div>
+      </section>
+
+      {/* Reviews */}
+      <section>
+        <h2 className="mb-2 text-lg font-bold">
+          What previous tenants had to say
+        </h2>
+        <ReviewCard
+          initial="S"
+          name="Sphesihle"
+          rating={3}
+          comment="Lorem ipsum dolor sit amet."
+          date="25/03/2025"
+        />
+      </section>
+
+      {/* Pricing Breakdown */}
+      <section>
+        <PricingBreakDown />
+      </section>
     </main>
   )
 }

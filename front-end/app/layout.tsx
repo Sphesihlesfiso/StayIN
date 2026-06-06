@@ -1,42 +1,28 @@
-import { Geist_Mono, Inter } from "next/font/google"
+
 
 import "./globals.css"
 import  Providers  from "./providers"
-import { cn } from "@/lib/utils";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn(
-        "antialiased",
-        fontMono.variable,
-        "font-sans",
-        inter.variable
-      )}
-    >
-      <body>
+    <html lang="en">
+      <body className="flex min-h-screen w-full flex-col">
         <Providers>
           <Navbar />
-          <main>{children}</main>
-          <Footer/>
+          {/* Remove flex-grow, just let content flow naturally */}
+          <main className="flex-1 w-full">{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>
   )
 }
+
+
 

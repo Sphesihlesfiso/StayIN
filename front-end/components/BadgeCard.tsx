@@ -1,17 +1,20 @@
-import React from 'react'
-import { Badge } from './ui/badge'
-import { Wifi } from 'lucide-react'
-import { BadgeCardProps } from '@/types/property'
+import { Badge } from "@/components/ui/badge"
+import { Wifi } from "lucide-react"
+import { BadgeCardProps } from "@/types/CardProps"
 
-export const BadgeCard = ({title,variant}:BadgeCardProps) => {
-
+export const BadgeCard = ({
+  title,
+  variant = "default",
+  icon: Icon = Wifi,
+  label,
+}: BadgeCardProps) => {
   return (
-    <div>
-        <h1 className='font-bold'>{title}</h1>
-      <Badge variant={variant}>
-        <Wifi /> Wifi
+    <div className="space-y-1">
+      <h1 className="font-bold">{title}</h1>
+      <Badge variant={variant} className="flex items-center gap-1">
+        <Icon className="h-4 w-4" />
+        {label}
       </Badge>
     </div>
   )
 }
-

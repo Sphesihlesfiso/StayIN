@@ -26,7 +26,3 @@ export type Property = {
   amenities: Amneity[]
   comments:Comment[]
 }
-export type BadgeCardProps ={
-    title:string
-    variant:"ghost" |"outline"
-}
