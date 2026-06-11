@@ -5,9 +5,14 @@ import {
 import prisma from "../config/db";
 import { handlePrismaError } from "../utils/handlePrismaError";
 
-export const getAllComments = async () => {
+
+export const getAllComments = async (id:number) => {
+
   try {
-    return await prisma.comment.findMany();
+    return await prisma.comment.findMany({where:{id},include:{
+      User:true
+    }}
+    );
   } catch (error) {
     throw handlePrismaError(error);
   }
