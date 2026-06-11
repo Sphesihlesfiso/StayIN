@@ -6,3 +6,12 @@ export const useProperties = () => {
     queryFn: getAllProperties,
   })
 }
+export const useGetItem = <T>(
+  queryKey: string[],
+  queryFn: () => Promise<T>
+) => {
+  return useQuery({
+    queryKey,
+    queryFn,
+  })
+}
