@@ -57,7 +57,7 @@ model Property {
   town              String
   Amenities         Amenity[]
   Comments          Comment[]
-  NearbyPlacec       NearbyPlace[]
+  NearbyPlaces       NearbyPlace[]
   User              User              @relation(fields: [landlordId], references: [id])
 
   @@index([propertyType])
@@ -81,10 +81,13 @@ enum GenderRestriction {
 }
 
 enum PropertyType {
-  Backroom
+  SingleBackroom
+  SharingBackroom
   Apartment
-  Singleroom
-  SharingBackroom 
+  SharingApartment
+  SingeFlat
+  Flat
+   
 
 }
 

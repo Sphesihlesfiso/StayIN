@@ -10,7 +10,8 @@ export const getAllComments = async (id:number) => {
 
   try {
     return await prisma.comment.findMany({where:{id},include:{
-      User:true
+      User:true,
+     
     }}
     );
   } catch (error) {
