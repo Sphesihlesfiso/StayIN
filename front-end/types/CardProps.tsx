@@ -18,3 +18,9 @@ export type BadgeCardProps = {
   icon?: LucideIcon
   label: string
 }
+
+export type NearbyPlaceProps = {
+  name: string
+  walkTime?: string
+  carTime?: string
+}

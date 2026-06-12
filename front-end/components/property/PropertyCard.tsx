@@ -25,15 +25,18 @@ export const PropertyCard = ({
           alt="Event cover"
           className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
         />
-        <CardFooter className="flex flex-wrap gap-1.5">
-          {nsfasAccredited && <Badge>NSFAS Accredited</Badge>}
-          <Badge variant="ghost">{genderRestriction}</Badge>
-          <Badge variant="outline">{propertyType}</Badge>
-          <Badge variant="secondary">Rent: R{rent}</Badge>
-          <Badge variant="destructive">Deposit: R{deposit}</Badge>
-          <Badge variant="outline">
-            {town},{suburb}
-          </Badge>
+        <CardFooter className="grid grid-rows-3 gap-0.5">
+          <div className="text-xl font-extrabold">R{rent}/mo</div>
+          <h1 className="font-black">
+            {propertyType} in {town} , 
+              {suburb} 
+          </h1>
+          <div className="flex flex-wrap gap-1">
+            {nsfasAccredited && <Badge variant="secondary">Nsfas</Badge>}
+            <Badge variant="secondary">{genderRestriction}</Badge>
+            <Badge variant="secondary">{propertyType}</Badge>
+            {deposit && <Badge variant="secondary">Deposit: R{deposit}</Badge>}
+          </div>
         </CardFooter>
       </Card>
     </Link>

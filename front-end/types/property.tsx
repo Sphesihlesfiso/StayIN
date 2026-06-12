@@ -1,8 +1,8 @@
 import { Amneity } from "./amenity"
 import { Comment } from "./comment"
 
-export type PropertyType = "SINGLE" | "SHARING"
-export type GenderRestriction = "MALE_ONLY" | "FEMALE_ONLY" | "MIXED"
+export type PropertyType = "Backroom" | "Apartment" 
+export type GenderRestriction = "Male" | "Female" | "Mixed"
 
 export type Property = {
   id: number

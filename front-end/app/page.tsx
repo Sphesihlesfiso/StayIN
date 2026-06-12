@@ -2,7 +2,7 @@
 import React from "react"
 import { PropertyCard } from "@/components/property/PropertyCard"
 import { mockProperties } from "@/public/assetts/assetts"
-import { useProperties } from "@/hooks/useProperties"
+import { useProperties } from "@/hooks/Property/useProperties"
 import { useQueryClient } from "@tanstack/react-query"
 export default function HomePage() {
   const queryClient = useQueryClient()
@@ -23,7 +23,7 @@ export default function HomePage() {
     <main className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Available Properties</h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {mockProperties!.map((property) => (
+        {properties!.map((property) => (
           <PropertyCard key={property.id} {...property} />
         ))}
       </div>
