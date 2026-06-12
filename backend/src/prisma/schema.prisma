@@ -21,8 +21,6 @@ model Comment {
   propertyId  Int
   timestamp   DateTime @default(now())
   commenterId Int
-  
- 
   User        User     @relation(fields: [commenterId], references: [id])
   Property    Property @relation(fields: [propertyId], references: [id])
 }
@@ -52,12 +50,12 @@ model Property {
   createdAt         DateTime          @default(now())
   genderRestriction GenderRestriction
   propertyType      PropertyType
-  updatedAt         DateTime @updatedAt
+  updatedAt         DateTime          @updatedAt
   suburb            String
   town              String
   Amenities         Amenity[]
   Comments          Comment[]
-  NearbyPlaces       NearbyPlace[]
+  NearbyPlaces      NearbyPlace[]
   User              User              @relation(fields: [landlordId], references: [id])
 
   @@index([propertyType])
@@ -65,12 +63,12 @@ model Property {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  username String     
-  email    String     @unique
-  password String
-  role     Role       @default(TENANT)
-  Comments  Comment[]
+  id         Int        @id @default(autoincrement())
+  username   String
+  email      String     @unique
+  password   String
+  role       Role       @default(TENANT)
+  Comments   Comment[]
   Properties Property[]
 }
 
@@ -87,8 +85,6 @@ enum PropertyType {
   SharingApartment
   SingeFlat
   Flat
-   
-
 }
 
 enum Role {

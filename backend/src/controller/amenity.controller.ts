@@ -20,7 +20,8 @@ import {
 
 export const fetchAllAmenities = asyncHandler(
   async (req: Request, res: Response) => {
-    const amenities = await getAllAmenities();
+    const propertyId=Number(req.params.id)
+    const amenities = await getAllAmenities(propertyId);
     res.status(200).json(successResponse(amenities, "Amenities fetched"));
   },
 );

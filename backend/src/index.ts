@@ -7,6 +7,7 @@ import commentsRoutes from "./routes/comment.routes";
 import authRoutes from "./routes/auth.routes";
 import loginRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes"
+import amenitiesRoutes from "./routes/amenity.routes"
 import { errorHandler } from "./middleware/errorHandler.error";
 
 configDotenv();
@@ -29,10 +30,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", homeRoutes);
 app.use("/property", propertyRoutes);
 app.use("/login", loginRoutes);
+app.use("/amenity",amenitiesRoutes)
 app.use("/comment", commentsRoutes);
 app.use("/auth", authRoutes);
 app.use("/user",userRoutes)
-app.use(errorHandler);
+// app.use(errorHandler);
 app.listen(Port, () => {
   console.log(`Server is running on port ${Port}`);
 });

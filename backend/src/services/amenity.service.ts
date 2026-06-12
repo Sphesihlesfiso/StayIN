@@ -7,18 +7,10 @@ import prisma from "../config/db";
 import { handlePrismaError } from "../utils/handlePrismaError";
 import { AppError } from "../errors/errors";
 
-export const getAllAmenities = async () => {
-  try {
-    return await prisma.amenity.findMany({
-      select: {
-        id: true,
-        name: true,
-        propertyId: true,
-      },
-    });
-  } catch (error) {
-    throw handlePrismaError(error);
-  }
+export const getAllAmenities = async (propertyId: number) => {
+
+    return await prisma.amenity.findMany({ where: { propertyId } });
+ 
 };
 
 export const getAmenityById = async (id: number) => {
