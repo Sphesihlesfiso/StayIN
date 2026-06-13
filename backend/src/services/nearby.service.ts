@@ -6,19 +6,13 @@ import prisma from "../config/db";
 import { handlePrismaError } from "../utils/handlePrismaError";
 import { AppError } from "../errors/errors";
 
-export const getAllNearbyPlaces = async () => {
+export const getAllNearbyPlaces = async (propertyId: number) => {
   try {
     return await prisma.nearbyPlace.findMany({
-      select: {
-        id: true,
-        name: true,
-        type: true,
-        distance: true,
-        nearByPlaceId: true,
-      },
+      where: { nearByPlaceId: propertyId },
     });
   } catch (error) {
-    throw handlePrismaError(error);
+    handlePrismaError(error);
   }
 };
 
@@ -39,7 +33,7 @@ export const addNearbyPlace = async (data: CreateNearByPlaceInput) => {
       },
     });
   } catch (error) {
-    throw handlePrismaError(error);
+    handlePrismaError(error);
   }
 };
 
@@ -47,7 +41,7 @@ export const deleteNearbyPlace = async (id: number) => {
   try {
     await prisma.nearbyPlace.delete({ where: { id } });
   } catch (error) {
-    throw handlePrismaError(error);
+    handlePrismaError(error);
   }
 };
 
@@ -61,6 +55,6 @@ export const updateNearbyPlace = async (
       data,
     });
   } catch (error) {
-    throw handlePrismaError(error);
+    handlePrismaError(error);
   }
 };
