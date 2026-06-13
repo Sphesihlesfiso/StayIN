@@ -34,7 +34,7 @@ app.use("/amenity",amenitiesRoutes)
 app.use("/comment", commentsRoutes);
 app.use("/auth", authRoutes);
 app.use("/user",userRoutes)
-// app.use(errorHandler);
+app.use(errorHandler);
 app.listen(Port, () => {
   console.log(`Server is running on port ${Port}`);
 });

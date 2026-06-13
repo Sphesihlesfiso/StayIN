@@ -13,5 +13,6 @@ export const errorHandler = (
   }
 
   // unexpected error
+  console.log(error)
   return res.status(500).json(errorResponse("Internal server error"));
 };
