@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { fetchAllAmenities } from "../controller/amenity.controller";
+import { deleteAmenityById, fetchAllAmenities, postAmenity, updateAmenityById } from "../controller/amenity.controller";
 
-const router=Router()
-router.get("/:id",fetchAllAmenities)
-
+const router=Router({mergeParams:true})
+router.get("/",fetchAllAmenities)
+router.post("/",postAmenity)
+router.patch("/:amenityId",updateAmenityById)
+router.delete("/:amenityId",deleteAmenityById)
 export default router

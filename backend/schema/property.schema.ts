@@ -11,7 +11,7 @@ export const createPropertySchema = z.object({
   water: z.number().int().optional(),
   electricity: z.number().int().optional(),
   about: z.string().min(1, "About is required"),
-  rules: z.string().min(1, "Rules are required"),
+  
   landlordId: z.number().int().positive(),
   genderRestriction: z.enum(["Male", "Female", "Mixed"]),
   propertyType: z.enum(["SingleBackroom",

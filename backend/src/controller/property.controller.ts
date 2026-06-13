@@ -25,7 +25,7 @@ export const fetchAllProperties = asyncHandler(
 
 export const getUniqueProperty = asyncHandler(
   async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const id = Number(req.params.propertyId);
     const property = await getPropertyById(id);
     res.status(200).json(successResponse(property, "Property found"));
   },
@@ -47,7 +47,7 @@ export const uploadProperty = asyncHandler(
 
 export const deleteProperty = asyncHandler(
   async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const id = Number(req.params.propertyId);
     await deletePropertyById(id);
     res.status(204).send();
   },
@@ -55,7 +55,7 @@ export const deleteProperty = asyncHandler(
 
 export const updatePropertyById = asyncHandler(
   async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const id = Number(req.params.propertyId);
     
     const parsed = updatePropertySchema.safeParse(req.body);
     if (!parsed.success){

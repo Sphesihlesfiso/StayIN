@@ -20,7 +20,7 @@ import {
 
 export const fetchAllAmenities = asyncHandler(
   async (req: Request, res: Response) => {
-    const propertyId=Number(req.params.id)
+    const propertyId=Number(req.params.propertyId)
     const amenities = await getAllAmenities(propertyId);
     res.status(200).json(successResponse(amenities, "Amenities fetched"));
   },
@@ -28,7 +28,7 @@ export const fetchAllAmenities = asyncHandler(
 
 export const fetchAmenityById = asyncHandler(
   async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const id = Number(req.params.amenityId);
     if (isNaN(id)) return res.status(400).json(errorResponse("Invalid id"));
     const amenity = await getAmenityById(id);
     res.status(200).json(successResponse(amenity, "Amenity found"));
@@ -46,7 +46,7 @@ export const postAmenity = asyncHandler(async (req: Request, res: Response) => {
 
 export const deleteAmenityById = asyncHandler(
   async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const id = Number(req.params.amenityId);
     if (isNaN(id)) return res.status(400).json(errorResponse("Invalid id"));
     await deleteAmenity(id);
     res.status(204).send();
@@ -55,7 +55,7 @@ export const deleteAmenityById = asyncHandler(
 
 export const updateAmenityById = asyncHandler(
   async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const id = Number(req.params.amenityId);
     if (isNaN(id)) return res.status(400).json(errorResponse("Invalid id"));
     const parsed = updateAmenitySchema.safeParse(req.body);
     if (!parsed.success) {
