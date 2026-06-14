@@ -11,7 +11,7 @@ import {
 const router = Router({ mergeParams: true });
 
 // URL: GET /properties/:propertyId/nearby-places
-router.get("/:propertyId", fetchAllNearbyPlaces);
+router.get("/", fetchAllNearbyPlaces);
 
 // URL: POST /properties/:propertyId/nearby-places
 router.post("/", postNearbyPlace);

@@ -17,6 +17,13 @@ export const deleteUser = async (id: number) => {
     handlePrismaError(error);
   }
 };
+export const getAllUsers =async ()=>{
+  try {
+    return await prisma.user.findMany()
+  } catch (error) {
+    handlePrismaError(error)
+  }
+}
 export const updateUser = async (id: number, data: UpdateUserInput) => {
   try {
     return await prisma.user.update({ where: { id }, data });

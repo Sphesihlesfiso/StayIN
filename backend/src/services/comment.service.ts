@@ -5,24 +5,29 @@ import {
 import prisma from "../config/db";
 import { handlePrismaError } from "../utils/handlePrismaError";
 
-
-export const getAllComments = async (id:number) => {
-
+export const getAllComments = async (id: number) => {
   try {
-    return await prisma.comment.findMany({where:{id},include:{
-      User:true,
-     
-    }}
-    );
+    return await prisma.comment.findMany({
+      where: { propertyId: id },
+      select:{
+        content:true,
+        rating:true,
+        timestamp:true,
+
+        User:{
+          select:{username:true}
+        }
+      }
+    });
   } catch (error) {
-    throw handlePrismaError(error);
+    handlePrismaError(error);
   }
 };
 export const deleteComment = async (id: number) => {
   try {
     await prisma.comment.delete({ where: { id } });
   } catch (error) {
-    throw handlePrismaError(error);
+    handlePrismaError(error);
   }
 };
 
@@ -37,7 +42,7 @@ export const addComment = async (data: CreateCommentInput) => {
       },
     });
   } catch (error) {
-    throw handlePrismaError(error);
+    handlePrismaError(error);
   }
 };
 
@@ -50,6 +55,6 @@ export const updateComment = async (id: number, data: UpdateCommentInput) => {
 
     return updatedComment;
   } catch (error) {
-    throw handlePrismaError(error);
+    handlePrismaError(error);
   }
 };

@@ -51,7 +51,7 @@ export const postNearbyPlace = asyncHandler(
     // Merge the body with the propertyId from the URL for Zod validation
     const inputData = {
       ...req.body,
-      propertyId: Number(req.params.propertyId),
+      nearByPlaceId: Number(req.params.propertyId),
     };
 
     const parsed = createNearbyPlaceSchema.safeParse(inputData);

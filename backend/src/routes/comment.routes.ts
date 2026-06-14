@@ -6,7 +6,8 @@ import {
 import { Router } from "express";
 import { getAllComents } from "../controller/comment.controller";
 
-const router = Router();
+const router = Router({mergeParams:true});
+
 router.get("/", getAllComents);
 router.post("/", postComment);
 router.delete("/:id", deleteCommentById);

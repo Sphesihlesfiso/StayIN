@@ -2,7 +2,10 @@ import { Prisma } from "@prisma/client";
 import { AppError } from "../errors/errors";
 import { handlePrismaError } from "../utils/handlePrismaError";
 import prisma from "../config/db";
-import { CreatePropertyInput,UpdatePropertyInput } from "../../schema/property.schema";
+import {
+  CreatePropertyInput,
+  UpdatePropertyInput,
+} from "../../schema/property.schema";
 
 export const getAllProperties = async () => {
   try {
@@ -13,7 +16,15 @@ export const getAllProperties = async () => {
 };
 
 export const getPropertyById = async (id: number) => {
-  const property = await prisma.property.findUnique({ where: { id } });
+  const property = await prisma.property.findUnique({
+    where: { id },
+    include: {
+      NearbyPlaces: true,
+      Comments: true,
+      rules: true,
+      Amenities: true,
+    },
+  });
   if (!property) throw new AppError("Property not found", 404);
   return property;
 };
@@ -34,10 +45,7 @@ export const deletePropertyById = async (id: number) => {
   }
 };
 
-export const updateProperty = async (
-  id: number,
-  data: UpdatePropertyInput,
-) => {
+export const updateProperty = async (id: number, data: UpdatePropertyInput) => {
   try {
     return await prisma.property.update({ where: { id }, data });
   } catch (error) {

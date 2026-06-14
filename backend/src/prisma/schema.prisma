@@ -21,7 +21,7 @@ model Comment {
   propertyId  Int
   timestamp   DateTime @default(now())
   commenterId Int
-  User        User     @relation(fields: [commenterId], references: [id])
+  User   User     @relation(fields: [commenterId], references: [id])
   Property    Property @relation(fields: [propertyId], references: [id])
 }
 

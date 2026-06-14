@@ -1,7 +1,6 @@
-
-export type Amenity ={
+export type NearbyPlace= {
     id:number,
     name:string,
-    type:string
+    type:string,
     propertyId:number
 }

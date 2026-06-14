@@ -17,7 +17,10 @@ import { validationError } from "../utils/apiResponce";
 
 export const getAllComents = asyncHandler(
   async (req: Request, res: Response) => {
-    const propertyId = Number(req.params.id);
+
+    const propertyId = Number(req.params.propertyId);
+  
+    
     const comments = await getAllComments(propertyId);
     res.status(200).json(successResponse(comments, "Comments fetched"));
   },

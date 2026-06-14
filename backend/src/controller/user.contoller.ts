@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
-import { deleteUser, getUser } from "../services/user.service";
+import { deleteUser, getAllUsers, getUser } from "../services/user.service";
 import { updateUser } from "../services/user.service";
 import { successResponse, validationError } from "../utils/apiResponce";
 
@@ -28,3 +28,7 @@ export const getUserInfo = asyncHandler(async (req: Request, res: Response) => {
   const user = await getUser(id);
   res.status(200).json(successResponse(user, "User details."));
 });
+export const getallusers =asyncHandler(async(req:Request,res:Response)=>{
+  const users=getAllUsers()
+  res.status(200).json(successResponse(users,"All users."))
+})

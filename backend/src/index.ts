@@ -5,7 +5,7 @@ import homeRoutes from "./routes/home.routes";
 import propertyRoutes from "./routes/property.routes";
 import commentsRoutes from "./routes/comment.routes";
 import authRoutes from "./routes/auth.routes";
-import loginRoutes from "./routes/auth.routes";
+
 import userRoutes from "./routes/user.routes"
 import amenitiesRoutes from "./routes/amenity.routes"
 import { errorHandler } from "./middleware/errorHandler.error";
@@ -29,10 +29,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", homeRoutes);
 app.use("/property", propertyRoutes);
-app.use("/login", loginRoutes);
-app.use("/amenity",amenitiesRoutes)
-app.use("/comment", commentsRoutes);
 app.use("/auth", authRoutes);
+app.use("/amenity",amenitiesRoutes)
+
 app.use("/user",userRoutes)
 // app.use(errorHandler);
 app.listen(Port, () => {
