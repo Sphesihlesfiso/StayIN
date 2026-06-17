@@ -6,7 +6,7 @@ import {
   updateNearbyPlace,
   deleteNearbyPlace,
 } from "@/api/nearbyEndPoints"
-import { NearbyPlace } from "@/types/nearbyPlace"
+import { NearbyPlace } from "@/types/Property/nearbyPlace"
 
 export const useNearbyPlace = (id: number) =>
   useQuery({

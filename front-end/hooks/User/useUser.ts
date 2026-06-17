@@ -6,7 +6,7 @@ import {
   updateUser,
   deleteUser,
 } from "@/api/userEndPoints"
-import { User } from "@/types/user"
+import { User } from "@/types/User/user"
 
 export const useUser = (id: number) =>
   useQuery({

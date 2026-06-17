@@ -6,7 +6,7 @@ import {
   updateComment,
   deleteComment,
 } from "@/api/commentEndPoints"
-import { Comment } from "@/types/comment"
+import { Comment } from "@/types/Property/comment"
 
 export const useComment = (id: number) =>
   useQuery({

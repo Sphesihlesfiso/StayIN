@@ -6,7 +6,7 @@ import {
   updateRule,
   deleteRule,
 } from "@/api/ruleEndPoints"
-import { Rule } from "@/types/PropertyRule"
+import { Rule } from "@/types/Property/PropertyRule"
 
 export const useRule = (id: number) =>
   useQuery({

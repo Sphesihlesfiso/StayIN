@@ -6,7 +6,7 @@ import {
   updateAmenity,
   deleteAmenity,
 } from "@/api/amenityEndPoints"
-import { Amenity } from "@/types/amenity"
+import { Amenity } from "@/types/Property/amenity"
 
 export const useAmenity = (id: number) =>
   useQuery({

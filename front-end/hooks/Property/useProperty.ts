@@ -1,7 +1,7 @@
 import { createProperty, deleteProperty, getPropertyById, updateProperty } from "@/api/propertyEndPoints"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { getAllProperties } from "@/api/propertyEndPoints"
-import { Property } from "@/types/property"
+import { Property } from "@/types/Property/property"
 export const useProperty = (id: number) => {
   return useQuery({
     queryKey: ["property", id],
