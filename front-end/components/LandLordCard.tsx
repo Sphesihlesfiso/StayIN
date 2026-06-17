@@ -1,7 +1,6 @@
 import { CheckCircle } from "lucide-react"
 import { Card } from "./ui/card"
-import { LandLordCardProps } from "@/types/CardProps"
-
+import { LandLordCardProps } from "@/types/Components/CardProps"
 
 export const LandLordCard = ({
   initial,

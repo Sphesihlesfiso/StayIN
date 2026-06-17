@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { PropertyCard } from "@/components/property/PropertyCard"
-import { useProperties } from "@/hooks/Property/useProperties"
+import { useProperties } from "@/hooks/Property/useProperty"
 import { useQueryClient } from "@tanstack/react-query"
 export default function HomePage() {
   const queryClient = useQueryClient()

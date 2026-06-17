@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react"
+
 export type LandLordCardProps = {
   initial: string
   name: string
@@ -15,12 +15,12 @@ export type BadgeCardProps = {
     | "destructive"
     | "ghost"
     | "link"
-  icon?: LucideIcon
+  icon?: ""
   label: string
 }
 
 export type NearbyPlaceProps = {
   name: string
-  walkTime?: string
-  carTime?: string
+  type:string
+  distance:string
 }

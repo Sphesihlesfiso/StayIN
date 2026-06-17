@@ -1,8 +1,7 @@
-import { Amenity } from "@/types/amenity";
-import {crudOperations} from "@/lib/generalCrudeOperations"
+import { Amenity } from "@/types/Property/amenity"
+import { crudOperations } from "@/lib/generalCrudeOperations"
 
 const AmenitytClient = crudOperations<Amenity>("property/:propertyId/amenities")
-
 
 export const getAllAmenities = AmenitytClient.getAll
 export const getAmenityById = AmenitytClient.getById

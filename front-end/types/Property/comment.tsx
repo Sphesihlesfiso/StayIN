@@ -1,4 +1,4 @@
-import { User } from "./user"
+import { User } from "../User/user"
 
 export type Comment= {
     id:number,

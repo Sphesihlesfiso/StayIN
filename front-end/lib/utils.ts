@@ -6,5 +6,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const extractDate = (date: string) :string => {
-  return date[0].slice(0, 10).replace("-", "/").replace("-", "/")
+  return date.slice(0, 10).replace("-", "/").replace("-", "/")
 }

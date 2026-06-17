@@ -1,5 +1,5 @@
 
-import { Property } from "@/types/property"
+import { Property } from "@/types/Property/property"
 import {crudOperations} from "@/lib/generalCrudeOperations"
 // Interacts cleanly with your /api base url mapping
 const propertyClient = crudOperations<Property>("property")

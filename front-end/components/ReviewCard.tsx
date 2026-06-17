@@ -16,7 +16,7 @@ export const ReviewCard = ({
   comment,
 }: ReviewCardProps) => {
   return (
-    <Card>
+    <Card className="mb-2">
       <div className="grid grid-rows-1 border-r-2 p-2.5">
         {/* Header */}
         <div className="flex justify-between">

@@ -1,8 +1,9 @@
-import { NearbyPlace } from "@/types/nearbyPlace"
-import {crudOperations} from "@/lib/generalCrudeOperations"
+import { NearbyPlace } from "@/types/Property/nearbyPlace"
+import { crudOperations } from "@/lib/generalCrudeOperations"
 
-const NearbyPlaceClient = crudOperations<NearbyPlace>("property/:propertyId/nearby-places")
-
+const NearbyPlaceClient = crudOperations<NearbyPlace>(
+  "property/:propertyId/nearby-places"
+)
 
 export const getAllNearbyPlaces = NearbyPlaceClient.getAll
 export const getNearbyPlaceById = NearbyPlaceClient.getById

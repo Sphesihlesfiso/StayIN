@@ -9,13 +9,13 @@ import {
 import { Comment } from "@/types/Property/comment"
 
 export const useComment = (id: number) =>
-  useQuery({
+  useQuery<Comment>({
     queryKey: ["comment", id],
     queryFn: () => getCommentById(id),
   })
 
 export const useComments = () =>
-  useQuery({
+  useQuery<Comment[]>({
     queryKey: ["comments"],
     queryFn: getAllComments,
   })

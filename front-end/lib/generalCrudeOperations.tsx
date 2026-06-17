@@ -12,6 +12,7 @@ export function crudOperations<T>(resourceUrl: string) {
     getById: async (id: string | number): Promise<T> => {
       const result = await api.get<ApiResponse<T>>(`/${resourceUrl}/${id}`)
       if (!result.data.success) throw new Error(result.data.message)
+        
       return result.data.data
     },
 

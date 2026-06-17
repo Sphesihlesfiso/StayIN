@@ -10,29 +10,27 @@ import { ReviewCard } from "@/components/ReviewCard"
 import PricingBreakDown from "@/components/PricingBreakDown"
 
 import { MobileActionBar } from "@/components/MobileActionBar"
-import { NearbyPlacesCard } from "@/components/NearyByPlace"
+import { NearbyPlaceBadge } from "@/components/NearyByPlace"
 import { useProperty } from "@/hooks/Property/useProperty"
 import { extractDate } from "@/lib/utils"
-
+import { LandLordCard } from "@/components/LandLordCard"
 
 export default function PropertyDetailsPage() {
   const { id } = useParams()
   const propertyId = Number(id)
-  const {data:property,isError,isLoading,error} = useProperty(propertyId)
-  console.log(error)
+  const { data: property, isError, isLoading } = useProperty(propertyId)
   console.log(property)
-  if (isError){
-    return (<>
-    Error Loading your property
-    </>)
-
+  console.log(`THESE ARE THEM COMMENTS ${property?.rules}`)
+  if (isError) {
+    return <>Error Loading your property</>
+  } else if (isLoading) {
+    return <>Loading your property</>
   }
-  else if (isLoading){
-    return (<>
-    Loading your property
-    </>)
+  console.log(property?.User)
+  if (!property){
+    return <>Error Loading your property</>
   }
-  
+  const { username ,createdAt} = property?.User
   return (
     <main className="mx-auto w-full space-y-6 p-4">
       {/* Cover Image */}
@@ -55,15 +53,16 @@ export default function PropertyDetailsPage() {
       </div>
 
       {/* Landlord */}
-      {/* <LandLordCard  /> */}
+      <LandLordCard initial={username.charAt(0)} name={username} trustScore={4.5} memberSince={extractDate(createdAt)}/>
 
       {/* House Rules */}
-      
+
       <section>
         <h2 className="mb-2 text-lg font-bold">House Rules</h2>
         <ul className="list-inside list-disc text-gray-700">
-          <li>{property?.about}</li>
-         
+          {property?.rules.map((rule) => (
+            <li key={rule.id}>{rule.content}</li>
+          ))}
         </ul>
       </section>
 
@@ -76,16 +75,26 @@ export default function PropertyDetailsPage() {
       {/* Amenities */}
       <section>
         <h2 className="mb-2 text-lg font-bold">Amenities</h2>
-        <div className="flex flex-wrap gap-1">
-          <ul>
-            {property?.amenities?.map((amneity) => (
-              <li key={amneity.id}>{amneity.name}</li>
+        <div>
+          <ul className="flex flex-wrap gap-1">
+            {property?.Amenities?.map((amneity) => (
+              <li key={amneity.id}>{amneity.name} . </li>
             ))}
           </ul>
         </div>
       </section>
       <section>
-        <NearbyPlacesCard />
+        <h2 className="mb-2 text-lg font-bold">Nearby Places.</h2>
+        <div>
+          {property?.NearbyPlaces.map((NearbyPlace) => (
+            <NearbyPlaceBadge
+              key={NearbyPlace.id}
+              name={NearbyPlace.name}
+              distance={NearbyPlace.distance}
+              type={NearbyPlace.type}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Reviews */}
@@ -93,18 +102,22 @@ export default function PropertyDetailsPage() {
         <h2 className="mb-2 text-lg font-bold">
           What previous tenants had to say
         </h2>
-
-        
-        {property?.comments?.map((comment) => (
-          <ReviewCard
-            key={comment.id}
-            initial="S"
-            name={comment.User.username}
-            rating={comment.rating}
-            comment={comment.content}
-            date={extractDate(comment.timestamp)}
-          />
-        ))}
+        {
+          <ul className="flex flex-col gap-1.5">
+            <li>
+              {property?.Comments.map((Comment) => (
+                <ReviewCard
+                  key={Comment.id}
+                  comment={Comment.content}
+                  rating={Comment.rating}
+                  initial={Comment.User.username.charAt(0)}
+                  name={Comment.User.username}
+                  date={extractDate(Comment.timestamp)}
+                />
+              ))}
+            </li>
+          </ul>
+        }
       </section>
 
       {/* Pricing Breakdown */}

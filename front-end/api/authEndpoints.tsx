@@ -1,3 +1,3 @@
-import { User } from "@/types/user";
-import { crudOperations } from "@/lib/generalCrudeOperations";
-const authClient=crudOperations<User>("")
+import { User } from "@/types/User/user"
+import { crudOperations } from "@/lib/generalCrudeOperations"
+const authClient = crudOperations<User>("")

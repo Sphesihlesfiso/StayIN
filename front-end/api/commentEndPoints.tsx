@@ -1,4 +1,4 @@
-import { Comment } from "@/types/comment";
+import { Comment } from "@/types/Property/comment";
 import {crudOperations} from "@/lib/generalCrudeOperations"
 
 const CommentClient = crudOperations<Comment>("property/:propertyId/comments/")

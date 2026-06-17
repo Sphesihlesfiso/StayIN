@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { Wifi } from "lucide-react"
-import { BadgeCardProps } from "@/types/CardProps"
+import { BadgeCardProps } from "@/types/Components/CardProps"
 
 export const BadgeCard = ({
   title,

@@ -1,7 +1,10 @@
-import { Amneity } from "./amenity"
+import { User } from "../User/user"
+import { Amenity } from "./amenity"
 import { Comment } from "./comment"
+import { NearbyPlace } from "./nearbyPlace"
+import { Rule } from "./PropertyRule"
 
-export type PropertyType = "Backroom" | "Apartment" 
+export type PropertyType = "Backroom" | "Apartment"
 export type GenderRestriction = "Male" | "Female" | "Mixed"
 
 export type Property = {
@@ -15,7 +18,8 @@ export type Property = {
   water: number | null
   electricity: number | null
   about: string
-  rules: string
+  rules: Rule[]
+
   landlordId: number
   suburb: string
   town: string
@@ -23,6 +27,8 @@ export type Property = {
   propertyType: PropertyType
   createdAt: string
   updatedAt: string
-  amenities: Amneity[]
-  comments:Comment[]
+  User:User
+  NearbyPlaces: NearbyPlace[]
+  Amenities: Amenity[]
+  Comments: Comment[]
 }
