@@ -1,7 +1,7 @@
 import { NearbyPlace } from "@/types/nearbyPlace"
 import {crudOperations} from "@/lib/generalCrudeOperations"
 
-const NearbyPlaceClient = crudOperations<NearbyPlace>(":propertyId/nearby-places")
+const NearbyPlaceClient = crudOperations<NearbyPlace>("property/:propertyId/nearby-places")
 
 
 export const getAllNearbyPlaces = NearbyPlaceClient.getAll

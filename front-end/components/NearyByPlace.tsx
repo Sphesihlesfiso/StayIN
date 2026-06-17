@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Car, Footprints } from "lucide-react"
+
 
 import { NearbyPlaceProps } from "@/types/CardProps"
 const NearbyPlaceBadge = ({ name, walkTime, carTime }: NearbyPlaceProps) => {
@@ -13,12 +13,12 @@ const NearbyPlaceBadge = ({ name, walkTime, carTime }: NearbyPlaceProps) => {
       <div className="flex flex-wrap gap-2 text-sm text-gray-600">
         {walkTime && (
           <span className="flex items-center gap-1">
-            <Footprints className="h-4 w-4" /> {walkTime} walk
+             {walkTime} walk
           </span>
         )}
         {carTime && (
           <span className="flex items-center gap-1">
-            <Car className="h-4 w-4" /> {carTime} by car
+            {carTime} by car
           </span>
         )}
       </div>

@@ -1,11 +1,11 @@
 import { Rule } from "@/types/PropertyRule";
 import {crudOperations} from "@/lib/generalCrudeOperations"
 
-const ruleClient = crudOperations<Rule>(":propertyId/rules")
+const ruleClient = crudOperations<Rule>("property/:propertyId/rules")
 
 
-export const getAllrules = ruleClient.getAll
-export const getruleById = ruleClient.getById
-export const createrule = ruleClient.create
-export const updaterule = ruleClient.update
-export const deleterule = ruleClient.delete
+export const getAllRules = ruleClient.getAll
+export const getRuleById = ruleClient.getById
+export const createRule = ruleClient.create
+export const updateRule = ruleClient.update
+export const deleteRule = ruleClient.delete

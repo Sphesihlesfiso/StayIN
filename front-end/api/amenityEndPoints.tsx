@@ -1,11 +1,11 @@
 import { Amenity } from "@/types/amenity";
 import {crudOperations} from "@/lib/generalCrudeOperations"
 
-const AmenitytClient = crudOperations<Amenity>(":propertyId/amenities")
+const AmenitytClient = crudOperations<Amenity>("property/:propertyId/amenities")
 
 
 export const getAllAmenities = AmenitytClient.getAll
-export const getAmenitytById = AmenitytClient.getById
+export const getAmenityById = AmenitytClient.getById
 export const createAmenity = AmenitytClient.create
 export const updateAmenity = AmenitytClient.update
 export const deleteAmenity = AmenitytClient.delete

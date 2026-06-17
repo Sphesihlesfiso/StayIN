@@ -18,7 +18,9 @@ import { extractDate } from "@/lib/utils"
 export default function PropertyDetailsPage() {
   const { id } = useParams()
   const propertyId = Number(id)
-  const {data:property,isError,isLoading} = useProperty(propertyId)
+  const {data:property,isError,isLoading,error} = useProperty(propertyId)
+  console.log(error)
+  console.log(property)
   if (isError){
     return (<>
     Error Loading your property
@@ -30,7 +32,6 @@ export default function PropertyDetailsPage() {
     Loading your property
     </>)
   }
-  
   
   return (
     <main className="mx-auto w-full space-y-6 p-4">
@@ -61,7 +62,7 @@ export default function PropertyDetailsPage() {
       <section>
         <h2 className="mb-2 text-lg font-bold">House Rules</h2>
         <ul className="list-inside list-disc text-gray-700">
-          <li>{property?.rules}</li>
+          <li>{property?.about}</li>
          
         </ul>
       </section>

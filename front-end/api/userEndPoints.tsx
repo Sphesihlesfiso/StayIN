@@ -5,6 +5,8 @@ const userClient = crudOperations<User>("user")
 
 
 
-export const getuserById = userClient.getById
-export const updateuser = userClient.update
-export const deleteuser = userClient.delete
+export const getUserById = userClient.getById
+export const updateUser = userClient.update
+export const deleteUser = userClient.delete
+export const createUser =userClient.create
+export const getAllUsers=userClient.getAll
