@@ -15,6 +15,7 @@ import { useProperty } from "@/hooks/Property/useProperty"
 import { extractDate } from "@/lib/utils"
 import { LandLordCard } from "@/components/LandLordCard"
 
+
 export default function PropertyDetailsPage() {
   const { id } = useParams()
   const propertyId = Number(id)
@@ -53,7 +54,12 @@ export default function PropertyDetailsPage() {
       </div>
 
       {/* Landlord */}
-      <LandLordCard initial={username.charAt(0)} name={username} trustScore={4.5} memberSince={extractDate(createdAt)}/>
+      <LandLordCard
+        initial={username.charAt(0)}
+        name={username}
+        trustScore={4.5}
+        memberSince={extractDate(createdAt)}
+      />
 
       {/* House Rules */}
 
@@ -74,6 +80,44 @@ export default function PropertyDetailsPage() {
 
       {/* Amenities */}
       <section>
+         {/* <Card className="rounded-2xl">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                    Amenities
+                  </CardTitle>
+                  
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {amenitiesList.map((amenity) => {
+                      const Icon = amenity.icon
+                      const active = selectedAmenities.includes(amenity.id)
+                      return (
+                        <button
+                          key={amenity.id}
+                          type="button"
+                          
+                          className={cn(
+                            "flex items-center gap-2 rounded-xl border-2 p-3 text-sm font-medium transition-colors",
+                            active
+                              ? "border-primary bg-primary/10 text-foreground"
+                              : "border-border text-muted-foreground hover:border-primary/50"
+                          )}
+                        >
+                          <Icon
+                            className={cn(
+                              "h-4 w-4",
+                              active ? "text-primary" : "text-muted-foreground"
+                            )}
+                          />
+                          {amenity.label}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </CardContent>
+              </Card> */}
         <h2 className="mb-2 text-lg font-bold">Amenities</h2>
         <div>
           <ul className="flex flex-wrap gap-1">
@@ -104,18 +148,18 @@ export default function PropertyDetailsPage() {
         </h2>
         {
           <ul className="flex flex-col gap-1.5">
-            <li>
-              {property?.Comments.map((Comment) => (
+            {property?.Comments.map((Comment,index) => (
+              <li key={ index } >
                 <ReviewCard
-                  key={Comment.id}
+                 
                   comment={Comment.content}
                   rating={Comment.rating}
                   initial={Comment.User.username.charAt(0)}
                   name={Comment.User.username}
                   date={extractDate(Comment.timestamp)}
                 />
-              ))}
-            </li>
+              </li>
+            ))}
           </ul>
         }
       </section>

@@ -17,7 +17,7 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           {/* Remove flex-grow, just let content flow naturally */}
-          <main className="flex-1 w-full">{children}</main>
+          <main className="w-full">{children}</main>
           <Footer />
         </Providers>
       </body>
