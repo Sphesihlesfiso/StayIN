@@ -531,11 +531,12 @@ export default function AddListingPage() {
           </CardTitle>
           <CardDescription>Set expectations for your tenants</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex gap-2">
           <Input
             placeholder="e.g. No loud music after 10pm, no smoking indoors, visitors must sign in..."
             className="rounded-xl"
           />
+          <Button>+</Button>
         </CardContent>
       </Card>
 
