@@ -10,22 +10,23 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import type { Review } from "@/lib/data"
+import { Comment } from "@/types/Property/comment"
+
 
 interface ReviewsSectionProps {
-  reviews: Review[]
+  reviews: Comment[]
 }
 
-function ReviewCard({ review }: { review: Review }) {
+function ReviewCard({ review }: { review: Comment }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="mb-3 flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-          {review.avatar}
+          {review.User.username}
         </div>
         <div className="flex-1">
-          <p className="font-medium text-foreground">{review.reviewer}</p>
-          <p className="text-xs text-muted-foreground">{review.date}</p>
+          <p className="font-medium text-foreground">{review.User.username}</p>
+          <p className="text-xs text-muted-foreground">{review.User.createdAt}</p>
         </div>
         <div className="flex items-center gap-1">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -41,7 +42,7 @@ function ReviewCard({ review }: { review: Review }) {
         </div>
       </div>
       <p className="text-sm leading-relaxed text-muted-foreground">
-        {review.text}
+        {review.content}
       </p>
     </div>
   )
@@ -74,9 +75,9 @@ export function ReviewsSection({ reviews }: ReviewsSectionProps) {
 
       {/* Show first 2 reviews */}
       <div className="space-y-3">
-        {reviews.slice(0, 2).map((review) => (
-          <ReviewCard key={review.id} review={review} />
-        ))}
+        {/* {reviews.slice(0, 2).map((review,index) => (
+          <ReviewCard key={index} review={review} />
+        ))} */}
       </div>
 
       {/* Read all reviews button */}

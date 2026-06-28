@@ -174,11 +174,11 @@
 // }
 "use client"
 
-import { useState, use } from "react"
+import { useState, } from "react"
 import { notFound } from "next/navigation"
-import { PhotoGallery } from "@/components/photo-gallery"
+// import { PhotoGallery } from "@/components/photo-gallery"
 import { MapPanel } from "@/components/map-panel"
-import { TransparencyBox } from "@/components/transparency-box"
+// import { TransparencyBox } from "@/components/transparency-box"
 import { ReviewsSection } from "@/components/reviews-section"
 import { Button } from "@/components/ui/button"
 import {
@@ -189,7 +189,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
-import { properties } from "@/lib/data"
+import { Camera } from "lucide-react"
+import { useParams } from "next/navigation"
+import { useProperty } from "@/hooks/Property/useProperty"
+import { extractDate } from "@/lib/utils"
 import {
   Star,
   CheckCircle,
@@ -201,7 +204,11 @@ import {
   WashingMachine,
   Shield,
   Zap,
-  MapPin,
+  Bus,
+  Battery,
+  Sun,
+  Flame
+  
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -211,73 +218,73 @@ const amenityIcons: Record<string, React.ReactNode> = {
   Kitchen: <UtensilsCrossed className="h-5 w-5" />,
   Laundry: <WashingMachine className="h-5 w-5" />,
   Security: <Shield className="h-5 w-5" />,
+  Shuttle:<Bus className="h-5 w-5" />,
   "Loadshedding-ready": <Zap className="h-5 w-5" />,
 }
+const loadSheddingIcons:Record<string,React.ReactNode>={
+  Inverter:<Battery className="h-5 w-5" />,
+  Gas:<Flame className="h-5 w-5" />,
+  Solar:<Sun className="h-5 w-5" />,
+}
+import { Property } from "@/types/Property/property"
+
 
 export default function ListingPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const { id } = use(params)
-  const property = properties.find((p) => p.id === id)
+  nsfasAccredited,
+ 
+  rent,
+  deposit,
+  suburb,
+  town,
+  name,
+}: Property) {
+ 
+    const { id } = useParams()
+    const propertyId = Number(id)
+    const [showAllRules, setShowAllRules] = useState(false)
+    const [showFullDescription, setShowFullDescription] = useState(false)
+    const [isSaved, setIsSaved] = useState(false)
+    const [showAllAmenities, setShowAllAmenities]=useState(6)
+    const { data: property, isError, isLoading } = useProperty(propertyId)
+    console.log(property)
+    console.log(`THESE ARE THEM COMMENTS ${property?.rules}`)
+    if (isError) {
+      return <>Error Loading your property</>
+    } else if (isLoading) {
+      return <>Loading your property</>
+    }
+    console.log(property?.User)
+    if (!property){
+      return <>Error Loading your property</>
+    }
+  // const { username ,createdAt} = property?.User
 
-  const [showAllRules, setShowAllRules] = useState(false)
-  const [showFullDescription, setShowFullDescription] = useState(false)
-  const [isSaved, setIsSaved] = useState(false)
+  const loadsheddingReady=["Solar"]
+  const security=["Electric Fence","Securtiy Gate","CCTV"]
 
   if (!property) {
     notFound()
   }
 
   return (
-    <div className="pb-20 md:pb-0">
+    <div className="p-7 sm:p-4">
       {/* Top Section - Split View on Desktop */}
       <div className="mb-8 grid gap-6 lg:grid-cols-[55%_45%]">
         {/* Photos */}
-        <PhotoGallery images={property.images} title={property.title} />
+        {/* <PhotoGallery images={} title={title} /> */}
 
         {/* Map - Hidden on mobile, shown on desktop */}
-        <div className="hidden lg:block">
-          <MapPanel
-            location={property.location}
-            city={property.city}
-            nearbyPOI={property.nearbyPOI}
-          />
-        </div>
-
-        {/* Mobile Map Button */}
-        <div className="lg:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" className="w-full gap-2 rounded-xl">
-                <MapPin className="h-4 w-4" />
-                View on map
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="h-[80vh] rounded-t-3xl">
-              <SheetHeader className="mb-4">
-                <SheetTitle>Location</SheetTitle>
-              </SheetHeader>
-              <MapPanel
-                location={property.location}
-                city={property.city}
-                nearbyPOI={property.nearbyPOI}
-              />
-            </SheetContent>
-          </Sheet>
-        </div>
       </div>
 
       {/* Main Content - Two Column Layout */}
-      <div className="grid gap-8 lg:grid-cols-[65%_35%]">
+      <div className="">
         {/* Left Column - Details */}
         <div className="space-y-8">
           {/* Title and Type */}
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <Badge variant="secondary" className="rounded-full">
-                {property.type}
+                {property.propertyType}
               </Badge>
               {property.nsfasAccredited && (
                 <Badge className="rounded-full bg-green-100 text-green-800 hover:bg-green-100">
@@ -286,35 +293,37 @@ export default function ListingPage({
               )}
             </div>
             <h1 className="text-2xl font-bold text-foreground md:text-3xl">
-              {property.title} in {property.location}
+              {property.name} in {property.suburb}
             </h1>
-            <p className="mt-1 text-muted-foreground">{property.city}</p>
+            <p className="mt-1 text-muted-foreground">{property.town}</p>
           </div>
 
           {/* Host Card */}
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="flex items-start gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-lg font-semibold text-primary">
-                {property.host.avatar}
+                {property.User.username.charAt(0)}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-foreground">
-                    Hosted by {property.host.name}
+                    Hosted by {property.User.username}
                   </h3>
-                  {property.host.verified && (
+                  {property.User.username && (
                     <CheckCircle className="h-5 w-5 text-primary" />
                   )}
                 </div>
                 <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    {property.host.trustScore} Landlord Trust Score
+                    {property.User.role} Landlord Trust Score
                   </span>
-                  <span>Member since {property.host.memberSince}</span>
+                  <span>
+                    Member since {extractDate(property.User.createdAt)}
+                  </span>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Response time: {property.host.responseTime}
+                  {/* Response time: {host.responseTime} */}
                 </p>
               </div>
             </div>
@@ -326,7 +335,7 @@ export default function ListingPage({
               House Rules
             </h3>
             <ul className="space-y-2">
-              {property.houseRules
+              {property.rules
                 .slice(0, showAllRules ? undefined : 4)
                 .map((rule, index) => (
                   <li
@@ -334,11 +343,11 @@ export default function ListingPage({
                     className="flex items-start gap-3 text-muted-foreground"
                   >
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                    {rule}
+                    {rule.content}
                   </li>
                 ))}
             </ul>
-            {property.houseRules.length > 4 && (
+            {property.rules.length > 4 && (
               <Button
                 variant="ghost"
                 onClick={() => setShowAllRules(!showAllRules)}
@@ -365,7 +374,7 @@ export default function ListingPage({
                 !showFullDescription && "line-clamp-2"
               )}
             >
-              {property.description}
+              {property.about}
             </p>
             <Button
               variant="ghost"
@@ -380,24 +389,29 @@ export default function ListingPage({
               )}
             </Button>
           </div>
-
           {/* Amenities */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground">Amenities</h3>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {property.amenities.slice(0, 6).map((amenity) => (
+              {property.Amenities.slice(0, showAllAmenities).map((amenity) => (
                 <div
-                  key={amenity}
+                  key={amenity.id}
                   className="flex items-center gap-3 text-muted-foreground"
                 >
-                  {amenityIcons[amenity] || <CheckCircle className="h-5 w-5" />}
-                  <span>{amenity}</span>
+                  {amenityIcons[amenity.name] || (
+                    <CheckCircle className="h-5 w-5" />
+                  )}
+                  <span>{amenity.name}</span>
                 </div>
               ))}
             </div>
-            {property.amenities.length > 6 && (
-              <Button variant="outline" className="rounded-xl">
-                Show all {property.amenities.length} amenities
+            {property.Amenities.length > 6 && (
+              <Button
+                variant="outline"
+                className="rounded-xl"
+                onClick={() => setShowAllAmenities(property.Amenities.length)}
+              >
+                Show all {property.Amenities.length} amenities
               </Button>
             )}
           </div>
@@ -408,17 +422,20 @@ export default function ListingPage({
               Loadshedding readiness
             </h3>
             <div className="flex flex-wrap gap-2">
-              {property.loadsheddingReady.map((item) => (
+              {property.Amenities.filter(
+                (Amenity) =>
+                  Amenity.name == "Solar" ||
+                  Amenity.name == "Inverter" ||
+                  Amenity.name == "Gas" ||
+                  Amenity.name == "Generator"
+              ).map((item) => (
                 <Badge
-                  key={item}
+                  key={item.id}
                   variant="secondary"
                   className="gap-1.5 rounded-full px-3 py-1.5"
                 >
-                  {item === "Solar" && "☀️"}
-                  {item === "Inverter" && "🔋"}
-                  {item === "Gas" && "🕯️"}
-                  {item === "Generator" && "⚡"}
-                  {item}
+                  {loadSheddingIcons[item.name] }
+                  {item.name}
                 </Badge>
               ))}
             </div>
@@ -428,14 +445,14 @@ export default function ListingPage({
           <div className="space-y-3">
             <h3 className="text-lg font-semibold text-foreground">Security</h3>
             <div className="flex flex-wrap gap-2">
-              {property.security.map((item) => (
+              {security.map((item) => (
                 <Badge
                   key={item}
                   variant="secondary"
                   className="gap-1.5 rounded-full px-3 py-1.5"
                 >
-                  {item === "Electric Fence" && "🔒"}
-                  {item === "CCTV" && "📷"}
+                  {item === "Electric Fence" && <Zap />}
+                  {item === "CCTV" && <Camera />}
                   {item === "Armed Response" && "🚨"}
                   {item === "Security Guard" && "👮"}
                   {item === "Alarm System" && "🔔"}
@@ -450,22 +467,22 @@ export default function ListingPage({
           </div>
 
           {/* Reviews */}
-          <ReviewsSection reviews={property.reviews} />
+          <ReviewsSection reviews={property.Comments} />
         </div>
 
         {/* Right Column - Sticky Pricing */}
         <div className="hidden lg:block">
-          <TransparencyBox
-            price={property.price}
-            deposit={property.deposit}
-            utilities={property.utilities}
-            adminFee={property.adminFee}
-            nsfasAccredited={property.nsfasAccredited}
-            hostName={property.host.name}
-            location={property.location}
+          {/* <TransparencyBox
+            price={property.rent}
+            deposit={deposit}
+            utilities={property.Amenities}
+            // adminFee={adminFee}
+            nsfasAccredited={nsfasAccredited}
+            hostName={property.User.role}
+            location={location}
             onSave={() => setIsSaved(!isSaved)}
             isSaved={isSaved}
-          />
+          /> */}
         </div>
       </div>
 
@@ -474,7 +491,7 @@ export default function ListingPage({
         <div className="flex items-center justify-between gap-4">
           <div>
             <span className="text-xl font-bold text-foreground">
-              R{property.price.toLocaleString("en-ZA")}
+              R{property.rent.toLocaleString("en-ZA")}
             </span>
             <span className="text-muted-foreground">/mo</span>
           </div>
@@ -488,17 +505,17 @@ export default function ListingPage({
               <SheetHeader className="mb-4">
                 <SheetTitle>Pricing Details</SheetTitle>
               </SheetHeader>
-              <TransparencyBox
-                price={property.price}
-                deposit={property.deposit}
-                utilities={property.utilities}
-                adminFee={property.adminFee}
-                nsfasAccredited={property.nsfasAccredited}
-                hostName={property.host.name}
-                location={property.location}
+              {/* <TransparencyBox
+                price={rent}
+                deposit={deposit}
+                utilities={property.Amenities}
+                // adminFee={adminFee}
+                nsfasAccredited={nsfasAccredited}
+                hostName={property.User.username}
+                location={location}
                 onSave={() => setIsSaved(!isSaved)}
                 isSaved={isSaved}
-              />
+              /> */}
             </SheetContent>
           </Sheet>
         </div>
