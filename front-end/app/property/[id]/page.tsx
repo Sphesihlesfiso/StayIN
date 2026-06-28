@@ -15,7 +15,6 @@
 // import { extractDate } from "@/lib/utils"
 // import { LandLordCard } from "@/components/LandLordCard"
 
-
 // export default function PropertyDetailsPage() {
 //   const { id } = useParams()
 //   const propertyId = Number(id)
@@ -86,7 +85,7 @@
 //                     <Sparkles className="h-5 w-5 text-primary" />
 //                     Amenities
 //                   </CardTitle>
-                  
+
 //                 </CardHeader>
 //                 <CardContent>
 //                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -97,7 +96,7 @@
 //                         <button
 //                           key={amenity.id}
 //                           type="button"
-                          
+
 //                           className={cn(
 //                             "flex items-center gap-2 rounded-xl border-2 p-3 text-sm font-medium transition-colors",
 //                             active
@@ -151,7 +150,7 @@
 //             {property?.Comments.map((Comment,index) => (
 //               <li key={ index } >
 //                 <ReviewCard
-                 
+
 //                   comment={Comment.content}
 //                   rating={Comment.rating}
 //                   initial={Comment.User.username.charAt(0)}
@@ -174,12 +173,12 @@
 // }
 "use client"
 
-import { useState, } from "react"
+import { useState } from "react"
 import { notFound } from "next/navigation"
 // import { PhotoGallery } from "@/components/photo-gallery"
 import { MapPanel } from "@/components/map-panel"
 // import { TransparencyBox } from "@/components/transparency-box"
-import { ReviewsSection } from "@/components/reviews-section"
+import { CommentCard, ReviewsSection } from "@/components/reviews-section"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -189,7 +188,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
-import { Camera } from "lucide-react"
+
 import { useParams } from "next/navigation"
 import { useProperty } from "@/hooks/Property/useProperty"
 import { extractDate } from "@/lib/utils"
@@ -202,14 +201,34 @@ import {
   Car,
   UtensilsCrossed,
   WashingMachine,
-  Shield,
-  Zap,
   Bus,
   Battery,
   Sun,
-  Flame
-  
+  Flame,
 } from "lucide-react"
+import {
+  Zap,
+  Camera,
+  Shield,
+  Bell,
+  Lock,
+  Fingerprint,
+  DoorClosed,
+  UserCheck,
+} from "lucide-react"
+
+const securityIcons: Record<string, React.ReactNode> = {
+  "Electric Fence": <Zap className="h-5 w-5" />,
+  CCTV: <Camera className="h-5 w-5" />,
+  "Armed Response": <Shield className="h-5 w-5" />, // shield for protection
+  "Security Guard": <UserCheck className="h-5 w-5" />, // person with check
+  "Alarm System": <Bell className="h-5 w-5" />,
+  "Security Bars": <Lock className="h-5 w-5" />,
+  "Biometric Access": <Fingerprint className="h-5 w-5" />,
+  "24/7 Security": <Shield className="h-5 w-5" />, // reuse shield
+  "Security Gate": <DoorClosed className="h-5 w-5" />,
+}
+
 import { cn } from "@/lib/utils"
 
 const amenityIcons: Record<string, React.ReactNode> = {
@@ -218,50 +237,65 @@ const amenityIcons: Record<string, React.ReactNode> = {
   Kitchen: <UtensilsCrossed className="h-5 w-5" />,
   Laundry: <WashingMachine className="h-5 w-5" />,
   Security: <Shield className="h-5 w-5" />,
-  Shuttle:<Bus className="h-5 w-5" />,
+  Shuttle: <Bus className="h-5 w-5" />,
   "Loadshedding-ready": <Zap className="h-5 w-5" />,
 }
-const loadSheddingIcons:Record<string,React.ReactNode>={
-  Inverter:<Battery className="h-5 w-5" />,
-  Gas:<Flame className="h-5 w-5" />,
-  Solar:<Sun className="h-5 w-5" />,
+const loadSheddingIcons: Record<string, React.ReactNode> = {
+  Inverter: <Battery className="h-5 w-5" />,
+  Gas: <Flame className="h-5 w-5" />,
+  Solar: <Sun className="h-5 w-5" />,
 }
 import { Property } from "@/types/Property/property"
-
+import { User } from "../../../types/User/user"
 
 export default function ListingPage({
   nsfasAccredited,
- 
+
   rent,
   deposit,
   suburb,
   town,
   name,
 }: Property) {
- 
-    const { id } = useParams()
-    const propertyId = Number(id)
-    const [showAllRules, setShowAllRules] = useState(false)
-    const [showFullDescription, setShowFullDescription] = useState(false)
-    const [isSaved, setIsSaved] = useState(false)
-    const [showAllAmenities, setShowAllAmenities]=useState(6)
-    const { data: property, isError, isLoading } = useProperty(propertyId)
-    console.log(property)
-    console.log(`THESE ARE THEM COMMENTS ${property?.rules}`)
-    if (isError) {
-      return <>Error Loading your property</>
-    } else if (isLoading) {
-      return <>Loading your property</>
-    }
-    console.log(property?.User)
-    if (!property){
-      return <>Error Loading your property</>
-    }
+  const { id } = useParams()
+  const propertyId = Number(id)
+  const [showAllRules, setShowAllRules] = useState(false)
+  const [showFullDescription, setShowFullDescription] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+  const [showAllAmenities, setShowAllAmenities] = useState(6)
+  const { data: property, isError, isLoading } = useProperty(propertyId)
+  console.log(property)
+  console.log(`THESE ARE THEM COMMENTS ${property?.rules}`)
+  if (isError) {
+    return <>Error Loading your property</>
+  } else if (isLoading) {
+    return <>Loading your property</>
+  }
+  console.log(property?.User)
+  if (!property) {
+    return <>Error Loading your property</>
+  }
   // const { username ,createdAt} = property?.User
 
-  const loadsheddingReady=["Solar"]
-  const security=["Electric Fence","Securtiy Gate","CCTV"]
-
+  const loadsheddingReady = property.Amenities.filter(
+    (Amenity) =>
+      Amenity.name == "Solar" ||
+      Amenity.name == "Inverter" ||
+      Amenity.name == "Gas" ||
+      Amenity.name == "Generator"
+  )
+  const securityReady = property.Amenities.filter(
+    (amenity) =>
+      amenity.name === "Electric Fence" ||
+      amenity.name === "CCTV" ||
+      amenity.name === "Armed Response" ||
+      amenity.name === "Security Guard" ||
+      amenity.name === "Alarm System" ||
+      amenity.name === "Security Bars" ||
+      amenity.name === "Biometric Access" ||
+      amenity.name === "24/7 Security" ||
+      amenity.name === "Security Gate"
+  )
   if (!property) {
     notFound()
   }
@@ -376,18 +410,20 @@ export default function ListingPage({
             >
               {property.about}
             </p>
-            <Button
-              variant="ghost"
-              onClick={() => setShowFullDescription(!showFullDescription)}
-              className="gap-1 px-0 text-primary hover:text-primary/80"
-            >
-              {showFullDescription ? "Show less" : "Read more"}
-              {showFullDescription ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-            </Button>
+            {property.about.length > 500 && (
+              <Button
+                variant="ghost"
+                onClick={() => setShowFullDescription(!showFullDescription)}
+                className="gap-1 px-0 text-primary hover:text-primary/80"
+              >
+                {showFullDescription ? "Show less" : "Read more"}
+                {showFullDescription ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+            )}
           </div>
           {/* Amenities */}
           <div className="space-y-4">
@@ -405,13 +441,23 @@ export default function ListingPage({
                 </div>
               ))}
             </div>
-            {property.Amenities.length > 6 && (
+            {property.Amenities.length -
+              (loadsheddingReady.length + securityReady.length) >
+              6 && (
               <Button
                 variant="outline"
                 className="rounded-xl"
-                onClick={() => setShowAllAmenities(property.Amenities.length)}
+                onClick={() =>
+                  setShowAllAmenities(
+                    property.Amenities.length -
+                      (loadsheddingReady.length + securityReady.length)
+                  )
+                }
               >
-                Show all {property.Amenities.length} amenities
+                Show all{" "}
+                {property.Amenities.length -
+                  (loadsheddingReady.length + securityReady.length)}{" "}
+                amenities
               </Button>
             )}
           </div>
@@ -422,19 +468,13 @@ export default function ListingPage({
               Loadshedding readiness
             </h3>
             <div className="flex flex-wrap gap-2">
-              {property.Amenities.filter(
-                (Amenity) =>
-                  Amenity.name == "Solar" ||
-                  Amenity.name == "Inverter" ||
-                  Amenity.name == "Gas" ||
-                  Amenity.name == "Generator"
-              ).map((item) => (
+              {loadsheddingReady.map((item) => (
                 <Badge
-                  key={item.id}
+                  key={item.name}
                   variant="secondary"
                   className="gap-1.5 rounded-full px-3 py-1.5"
                 >
-                  {loadSheddingIcons[item.name] }
+                  {loadSheddingIcons[item.name]}
                   {item.name}
                 </Badge>
               ))}
@@ -445,29 +485,39 @@ export default function ListingPage({
           <div className="space-y-3">
             <h3 className="text-lg font-semibold text-foreground">Security</h3>
             <div className="flex flex-wrap gap-2">
-              {security.map((item) => (
+              {securityReady.map((item) => (
                 <Badge
-                  key={item}
+                  key={item.name}
                   variant="secondary"
                   className="gap-1.5 rounded-full px-3 py-1.5"
                 >
-                  {item === "Electric Fence" && <Zap />}
-                  {item === "CCTV" && <Camera />}
-                  {item === "Armed Response" && "🚨"}
-                  {item === "Security Guard" && "👮"}
-                  {item === "Alarm System" && "🔔"}
-                  {item === "Security Bars" && "🔐"}
-                  {item === "Biometric Access" && "👆"}
-                  {item === "24/7 Security" && "🛡️"}
-                  {item === "Security Gate" && "🚪"}
-                  {item}
+                  {securityIcons[item.name]}
+                  {item.name}
                 </Badge>
               ))}
             </div>
           </div>
 
           {/* Reviews */}
-          <ReviewsSection reviews={property.Comments} />
+          {property.Comments.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold text-foreground">
+                What previous teenants had to say.
+              </h3>
+              <div className="">
+                {property.Comments.map((Comment) => (
+                  <CommentCard
+                    key={Comment.id}
+
+                    rating={Comment.rating}
+                    content={Comment.content}
+                    timestamp={Comment.timestamp}
+                    User={Comment.User}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Column - Sticky Pricing */}

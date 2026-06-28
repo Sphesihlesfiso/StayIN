@@ -2,8 +2,8 @@ import { User } from "../User/user"
 
 export type Comment= {
     id:number,
-    content:string,
     rating:number,
+    content:string,
     commenterId:number,
     propertyId:number,
     User:User,
