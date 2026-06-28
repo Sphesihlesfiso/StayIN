@@ -9,7 +9,7 @@ import { extractDate } from '../lib/utils';
 
 
 
-export const CommentCard =({rating,content,User,timestamp,id,commenterId,propertyId}:Comment) =>{
+export const CommentCard =({rating,content,User}:Comment) =>{
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="mb-3 flex items-center gap-3">

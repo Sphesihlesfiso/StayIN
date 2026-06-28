@@ -42,7 +42,20 @@ import {
   Wind,
   Check,
   Bus,
+  // 🔒 Security icons
+  Camera,
+  Shield,
+  Bell,
+  Lock,
+  Fingerprint,
+  DoorClosed,
+  UserCheck,
+  // ⚡ Loadshedding icons
+  Battery,
+  Flame,
+  Sun,
 } from "lucide-react"
+
 import { toast } from "sonner"
 import {
   provinces,
@@ -59,16 +72,7 @@ const propertyTypes = [
   { value: "apartment", label: "Apartment" },
 ]
 
-const cities = [
-  "Cape Town",
-  "Johannesburg",
-  "Durban",
-  "Pretoria",
-  "Port Elizabeth",
-  "Bloemfontein",
-  "Stellenbosch",
-  "Potchefstroom",
-]
+
 
 const amenitiesList = [
   { id: "wifi", label: "WiFi", icon: Wifi },
@@ -80,6 +84,22 @@ const amenitiesList = [
   { id: "laundry", label: "Laundry", icon: WashingMachine },
   { id: "aircon", label: "Air Conditioning", icon: Wind },
   { id: "shuttle", label: "Shuttle", icon: Bus },
+
+  // 🔒 Security extras
+  { id: "electric-fence", label: "Electric Fence", icon: Zap },
+  { id: "cctv", label: "CCTV", icon: Camera },
+  { id: "armed-response", label: "Armed Response", icon: Shield },
+  { id: "security-guard", label: "Security Guard", icon: UserCheck },
+  { id: "alarm-system", label: "Alarm System", icon: Bell },
+  { id: "security-bars", label: "Security Bars", icon: Lock },
+  { id: "biometric-access", label: "Biometric Access", icon: Fingerprint },
+  { id: "security-gate", label: "Security Gate", icon: DoorClosed },
+
+  // ⚡ Loadshedding extras
+  { id: "inverter", label: "Inverter", icon: Battery },
+  { id: "gas", label: "Gas", icon: Flame },
+  { id: "solar", label: "Solar", icon: Sun },
+  { id: "generator", label: "Generator", icon: Zap },
 ]
 
 export default function AddListingPage() {

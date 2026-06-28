@@ -176,9 +176,9 @@
 import { useState } from "react"
 import { notFound } from "next/navigation"
 // import { PhotoGallery } from "@/components/photo-gallery"
-import { MapPanel } from "@/components/map-panel"
+
 // import { TransparencyBox } from "@/components/transparency-box"
-import { CommentCard, ReviewsSection } from "@/components/reviews-section"
+import { CommentCard } from "@/components/reviews-section"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -193,21 +193,29 @@ import { useParams } from "next/navigation"
 import { useProperty } from "@/hooks/Property/useProperty"
 import { extractDate } from "@/lib/utils"
 import {
+  // General UI
   Star,
   CheckCircle,
   ChevronDown,
   ChevronUp,
+
+  // General amenities
   Wifi,
   Car,
   UtensilsCrossed,
   WashingMachine,
   Bus,
+  ShieldCheck,
+  Droplets,
+  Wind,
+
+  // Loadshedding
   Battery,
   Sun,
   Flame,
-} from "lucide-react"
-import {
   Zap,
+
+  // Security
   Camera,
   Shield,
   Bell,
@@ -216,52 +224,44 @@ import {
   DoorClosed,
   UserCheck,
 } from "lucide-react"
+import { cn } from "@/lib/utils"
+const amenityIcons: Record<string, React.ReactNode> = {
+  WiFi: <Wifi className="h-5 w-5" />,
+  "Prepaid Electricity": <Zap className="h-5 w-5" />,
+  "24/7 Security": <ShieldCheck className="h-5 w-5" />,
+  "Water Included": <Droplets className="h-5 w-5" />,
+  Parking: <Car className="h-5 w-5" />,
+  "Shared Kitchen": <UtensilsCrossed className="h-5 w-5" />,
+  Laundry: <WashingMachine className="h-5 w-5" />,
+  "Air Conditioning": <Wind className="h-5 w-5" />,
+  Shuttle: <Bus className="h-5 w-5" />,
+}
 
 const securityIcons: Record<string, React.ReactNode> = {
   "Electric Fence": <Zap className="h-5 w-5" />,
   CCTV: <Camera className="h-5 w-5" />,
-  "Armed Response": <Shield className="h-5 w-5" />, // shield for protection
-  "Security Guard": <UserCheck className="h-5 w-5" />, // person with check
+  "Armed Response": <Shield className="h-5 w-5" />,
+  "Security Guard": <UserCheck className="h-5 w-5" />,
   "Alarm System": <Bell className="h-5 w-5" />,
   "Security Bars": <Lock className="h-5 w-5" />,
   "Biometric Access": <Fingerprint className="h-5 w-5" />,
-  "24/7 Security": <Shield className="h-5 w-5" />, // reuse shield
   "Security Gate": <DoorClosed className="h-5 w-5" />,
 }
 
-import { cn } from "@/lib/utils"
-
-const amenityIcons: Record<string, React.ReactNode> = {
-  WiFi: <Wifi className="h-5 w-5" />,
-  Parking: <Car className="h-5 w-5" />,
-  Kitchen: <UtensilsCrossed className="h-5 w-5" />,
-  Laundry: <WashingMachine className="h-5 w-5" />,
-  Security: <Shield className="h-5 w-5" />,
-  Shuttle: <Bus className="h-5 w-5" />,
-  "Loadshedding-ready": <Zap className="h-5 w-5" />,
-}
 const loadSheddingIcons: Record<string, React.ReactNode> = {
   Inverter: <Battery className="h-5 w-5" />,
   Gas: <Flame className="h-5 w-5" />,
   Solar: <Sun className="h-5 w-5" />,
+  Generator: <Zap className="h-5 w-5" />,
 }
-import { Property } from "@/types/Property/property"
-import { User } from "../../../types/User/user"
 
-export default function ListingPage({
-  nsfasAccredited,
 
-  rent,
-  deposit,
-  suburb,
-  town,
-  name,
-}: Property) {
+export default function ListingPage() {
   const { id } = useParams()
   const propertyId = Number(id)
   const [showAllRules, setShowAllRules] = useState(false)
   const [showFullDescription, setShowFullDescription] = useState(false)
-  const [isSaved, setIsSaved] = useState(false)
+  // const [isSaved, setIsSaved] = useState(false)
   const [showAllAmenities, setShowAllAmenities] = useState(6)
   const { data: property, isError, isLoading } = useProperty(propertyId)
   console.log(property)
@@ -278,12 +278,13 @@ export default function ListingPage({
   // const { username ,createdAt} = property?.User
 
   const loadsheddingReady = property.Amenities.filter(
-    (Amenity) =>
-      Amenity.name == "Solar" ||
-      Amenity.name == "Inverter" ||
-      Amenity.name == "Gas" ||
-      Amenity.name == "Generator"
+    (amenity) =>
+      amenity.name === "Solar" ||
+      amenity.name === "Inverter" ||
+      amenity.name === "Gas" ||
+      amenity.name === "Generator"
   )
+
   const securityReady = property.Amenities.filter(
     (amenity) =>
       amenity.name === "Electric Fence" ||
@@ -296,6 +297,7 @@ export default function ListingPage({
       amenity.name === "24/7 Security" ||
       amenity.name === "Security Gate"
   )
+
   if (!property) {
     notFound()
   }
@@ -508,11 +510,13 @@ export default function ListingPage({
                 {property.Comments.map((Comment) => (
                   <CommentCard
                     key={Comment.id}
-
+                    id={Comment.id}
+                    propertyId={property.id}
                     rating={Comment.rating}
                     content={Comment.content}
                     timestamp={Comment.timestamp}
                     User={Comment.User}
+                    
                   />
                 ))}
               </div>
