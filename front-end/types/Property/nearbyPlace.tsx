@@ -3,5 +3,5 @@ export type NearbyPlace= {
     name:string,
     type:string,
     propertyId:number
-    distance:string
+    minutes:string
 }

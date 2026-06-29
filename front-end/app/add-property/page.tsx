@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+
 import {
   ArrowLeft,
   Home,
@@ -32,39 +33,25 @@ import {
   Sparkles,
   ListChecks,
   X,
-  Wifi,
-  Zap,
   ShieldCheck,
-  Droplets,
-  Car,
-  Utensils,
-  WashingMachine,
-  Wind,
   Check,
-  Bus,
-  // 🔒 Security icons
-  Camera,
-  Shield,
-  Bell,
-  Lock,
-  Fingerprint,
-  DoorClosed,
-  UserCheck,
-  // ⚡ Loadshedding icons
-  Battery,
-  Flame,
-  Sun,
+  Navigation,
+  Footprints,
+  Plus,
 } from "lucide-react"
-
+import { amenitiesList } from "../../lib/constants/PropertyAmenities"
 import { toast } from "sonner"
 import {
   provinces,
   townsByProvince,
 } from "@/lib/constants/SouthAfricanLocations"
 import { Province } from "@/lib/constants/SouthAfricanLocations"
-
+import { placeTypes } from "../../lib/constants/PropertyAmenities"
+import { NearbyPlace } from "@/types/Property/nearbyPlace"
+import { useCreateProperty } from "@/hooks/Property/useProperty"
+import { GenderRestriction, PropertyType } from "@/types/Property/property"
 const propertyTypes = [
-  { value: "backroom", label: "Backroom" },
+  { value: "SharingBackroom", label: "Backroom" },
   { value: "digs", label: "Digs / Shared House" },
   { value: "single", label: "Single Room" },
   { value: "sharing", label: "Sharing Room" },
@@ -72,56 +59,31 @@ const propertyTypes = [
   { value: "apartment", label: "Apartment" },
 ]
 
-
-
-const amenitiesList = [
-  { id: "wifi", label: "WiFi", icon: Wifi },
-  { id: "prepaid", label: "Prepaid Electricity", icon: Zap },
-  { id: "security", label: "24/7 Security", icon: ShieldCheck },
-  { id: "water", label: "Water Included", icon: Droplets },
-  { id: "parking", label: "Parking", icon: Car },
-  { id: "kitchen", label: "Shared Kitchen", icon: Utensils },
-  { id: "laundry", label: "Laundry", icon: WashingMachine },
-  { id: "aircon", label: "Air Conditioning", icon: Wind },
-  { id: "shuttle", label: "Shuttle", icon: Bus },
-
-  // 🔒 Security extras
-  { id: "electric-fence", label: "Electric Fence", icon: Zap },
-  { id: "cctv", label: "CCTV", icon: Camera },
-  { id: "armed-response", label: "Armed Response", icon: Shield },
-  { id: "security-guard", label: "Security Guard", icon: UserCheck },
-  { id: "alarm-system", label: "Alarm System", icon: Bell },
-  { id: "security-bars", label: "Security Bars", icon: Lock },
-  { id: "biometric-access", label: "Biometric Access", icon: Fingerprint },
-  { id: "security-gate", label: "Security Gate", icon: DoorClosed },
-
-  // ⚡ Loadshedding extras
-  { id: "inverter", label: "Inverter", icon: Battery },
-  { id: "gas", label: "Gas", icon: Flame },
-  { id: "solar", label: "Solar", icon: Sun },
-  { id: "generator", label: "Generator", icon: Zap },
-]
-
 export default function AddListingPage() {
   const router = useRouter()
-  const [title, setTitle] = useState("")
-  const [type, setType] = useState("")
+  const [name, setTitle] = useState("")
+  const [propertyType, setType] = useState<PropertyType | undefined>(undefined)
 
   const [suburb, setSuburb] = useState("")
-  const [description, setDescription] = useState("")
-  const [price, setPrice] = useState("")
+  const [about, setabout] = useState("")
+  const [rent, setPrice] = useState("")
   const [deposit, setDeposit] = useState("")
   const [utilities, setUtilities] = useState("")
-  const [adminFee, setAdminFee] = useState("")
 
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
   const [photos, setPhotos] = useState<string[]>([])
-  const [nsfas, setNsfas] = useState(false)
-  const [gender, setGender] = useState("")
+  const [nsfasAccredited, setNsfasAccredited] = useState(false)
+  const [genderRestriction, setGender] = useState<
+    GenderRestriction | undefined
+  >(undefined)
   const [isDragging, setIsDragging] = useState(false)
   const [province, setProvince] = useState<Province | "">("")
   const [town, setTown] = useState("")
-
+  const [nearbyPlaces, setNearbyPlaces] = useState<NearbyPlace[]>([])
+  const [placeName, setPlaceName] = useState("")
+  const [placeType, setPlaceType] = useState("")
+  const [placeMinutes, setPlaceMinutes] = useState("")
+  const { mutate, isError, isSuccess } = useCreateProperty()
   const handleProvinceChange = (value: string) => {
     setProvince(value as Province)
     setTown("") // reset dependent field
@@ -131,6 +93,24 @@ export default function AddListingPage() {
     setSelectedAmenities((prev) =>
       prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
     )
+  }
+  const addNearbyPlace = () => {
+    if (!placeName.trim() || !placeType || !placeMinutes) {
+      toast.error("Add a place name, propertyType, and walking time")
+      return
+    }
+    // setNearbyPlaces((prev) => [
+    //   ...prev,
+    //   { name: placeName.trim(), propertyType: placeType, minutes: placeMinutes,  propertyId:1,id:1},
+    // ])
+    setPlaceName("")
+    setPlaceType("")
+    setPlaceMinutes("")
+    toast.success("Nearby place added")
+  }
+
+  const removeNearbyPlace = (index: number) => {
+    setNearbyPlaces((prev) => prev.filter((_, i) => i !== index))
   }
 
   const handleAddPhoto = () => {
@@ -151,21 +131,43 @@ export default function AddListingPage() {
   }
 
   const handleSubmit = (asDraft: boolean) => {
-    if (!asDraft && (!title || !type || !province || !price)) {
-      toast.error("Please fill in all required fields")
-      return
+    // if (!asDraft && (!name || !propertyType || !province || !rent)) {
+    //   toast.error("Please fill in all required fields")
+    //   console.log("touched")
+    //   return
+    // }
+
+    const newProperty = {
+      name,
+      propertyType,
+      suburb,
+      about,
+      address:"26 bakker street",
+      rent: Number(rent),
+      deposit: Number(deposit),
+      nsfasAccredited,
+      genderRestriction,
+      landlordId:1,
+      town,
+      gas: 0,
+      water:  0,
+      electricity:  0,
+      // array of NearbyPlace objects
     }
+    if (isError) {
+      toast.error("Nuh")
+    }
+    console.log(newProperty)
+    mutate(newProperty)
     toast.success(
       asDraft ? "Listing saved as draft" : "Listing published successfully!"
     )
-    router.push("/dashboard")
   }
 
-  const moveInTotal =
-    (Number(price) || 0) + (Number(deposit) || 0) + (Number(adminFee) || 0)
+  const moveInTotal = (Number(rent) || 0) + (Number(deposit) || 0)
 
   return (
-    <div className="mx-auto w-full space-y-6 pb-4 p-3">
+    <div className="mx-auto w-full space-y-6 p-3 pb-4">
       {/* Header */}
       <div className="flex items-center gap-3">
         <Button
@@ -198,13 +200,13 @@ export default function AddListingPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">
-              Listing title <span className="text-destructive">*</span>
+            <Label htmlFor="name">
+              Listing name <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="title"
+              id="name"
               placeholder="e.g. Cozy backroom near UCT campus"
-              value={title}
+              value={name}
               onChange={(e) => setTitle(e.target.value)}
               className="h-11 rounded-xl"
             />
@@ -212,11 +214,14 @@ export default function AddListingPage() {
 
           <div className="space-y-2">
             <Label>
-              Property type <span className="text-destructive">*</span>
+              Property propertyType <span className="text-destructive">*</span>
             </Label>
-            <Select value={type} onValueChange={setType}>
+            <Select
+              value={propertyType}
+              onValueChange={(val: PropertyType) => setType(val)}
+            >
               <SelectTrigger className="h-11 rounded-xl">
-                <SelectValue placeholder="Select property type" />
+                <SelectValue placeholder="Select property propertyType" />
               </SelectTrigger>
               <SelectContent>
                 {propertyTypes.map((pt) => (
@@ -229,9 +234,12 @@ export default function AddListingPage() {
             <Label>
               Prefered Gender <span className="text-destructive">*</span>
             </Label>
-            <Select value={gender} onValueChange={setGender}>
+            <Select
+              value={genderRestriction}
+              onValueChange={(val: GenderRestriction) => setGender(val)}
+            >
               <SelectTrigger className="h-11 rounded-xl">
-                <SelectValue placeholder="Select the gender" />
+                <SelectValue placeholder="Select the genderRestriction" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Male">Male</SelectItem>
@@ -242,12 +250,12 @@ export default function AddListingPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="about">about</Label>
             <Textarea
-              id="description"
+              id="about"
               placeholder="Describe the room, the neighborhood, transport links, and what makes it special..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={about}
+              onChange={(e) => setabout(e.target.value)}
               rows={4}
               className="rounded-xl"
             />
@@ -316,6 +324,116 @@ export default function AddListingPage() {
         </CardContent>
       </Card>
 
+      {/* Nearby Places */}
+      <Card className="rounded-2xl">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Navigation className="h-5 w-5 text-primary" />
+            Nearby places
+          </CardTitle>
+          <CardDescription>
+            Add key spots near your property and how long they take to walk to
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Added places list */}
+          {nearbyPlaces.length > 0 && (
+            <div className="space-y-2">
+              {nearbyPlaces.map((place, index) => {
+                const typeInfo = placeTypes.find((t) => t.value === place.name)
+                const Icon = typeInfo?.icon ?? MapPin
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 rounded-xl border border-border bg-secondary/50 p-3"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                      <Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-foreground">
+                        {place.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {typeInfo?.label ?? "Place"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-full bg-background px-3 py-1.5 text-sm font-medium text-foreground">
+                      <Footprints className="h-4 w-4 text-muted-foreground" />
+                      {place.minutes} min
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeNearbyPlace(index)}
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <X className="h-4 w-4" />
+                      <span className="sr-only">Remove place</span>
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+          {/* Add place form */}
+          <div className="rounded-xl border border-dashed border-border p-4">
+            <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+              <div className="space-y-2">
+                <Label htmlFor="placeName">Place name</Label>
+                <Input
+                  id="placeName"
+                  placeholder="e.g. UCT, Checkers"
+                  value={placeName}
+                  onChange={(e) => setPlaceName(e.target.value)}
+                  className="h-11 rounded-xl"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Type</Label>
+                <Select value={placeType} onValueChange={setPlaceType}>
+                  <SelectTrigger className="h-11 rounded-xl">
+                    <SelectValue placeholder="Select propertyType" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {placeTypes.map((pt) => {
+                      const Icon = pt.icon
+                      return (
+                        <SelectItem key={pt.value} value={pt.value}>
+                          <span className="flex items-center gap-2">
+                            <Icon className="h-4 w-4 text-muted-foreground" />
+                            {pt.label}
+                          </span>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="placeMinutes">Walk (min)</Label>
+                <Input
+                  id="placeMinutes"
+                  type="number"
+                  min="1"
+                  placeholder="5"
+                  value={placeMinutes}
+                  onChange={(e) => setPlaceMinutes(e.target.value)}
+                  className="h-11 w-full rounded-xl sm:w-24"
+                />
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addNearbyPlace}
+              className="mt-3 w-full gap-2 rounded-xl"
+            >
+              <Plus className="h-4 w-4" />
+              Add nearby place
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
       {/* Pricing */}
       <Card className="rounded-2xl">
         <CardHeader>
@@ -330,15 +448,15 @@ export default function AddListingPage() {
         <CardContent className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="price">
+              <Label htmlFor="rent">
                 Monthly rent (R) <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="price"
+                id="rent"
                 type="number"
                 min={0}
                 placeholder="3500"
-                value={price}
+                value={rent}
                 onChange={(e) => setPrice(e.target.value)}
                 className="h-11 rounded-xl"
               />
@@ -371,7 +489,7 @@ export default function AddListingPage() {
               <Label htmlFor="adminFee">Admin fee (R, once-off)</Label>
               <Input
                 id="adminFee"
-                type="number"
+                propertyType="number"
                 placeholder="250"
                 value={adminFee}
                 onChange={(e) => setAdminFee(e.target.value)}
@@ -391,13 +509,13 @@ export default function AddListingPage() {
             </div>
           )}
 
-          {/* NSFAS toggle */}
+          {/* NSFASAccredited toggle */}
           <button
             type="button"
-            onClick={() => setNsfas(!nsfas)}
+            onClick={() => setNsfasAccredited(!nsfasAccredited)}
             className={cn(
               "flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left transition-colors",
-              nsfas
+              nsfasAccredited
                 ? "border-green-500 bg-green-50 dark:bg-green-950/20"
                 : "border-border hover:border-primary/50"
             )}
@@ -405,7 +523,7 @@ export default function AddListingPage() {
             <div
               className={cn(
                 "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
-                nsfas
+                nsfasAccredited
                   ? "bg-green-500 text-white"
                   : "bg-secondary text-muted-foreground"
               )}
@@ -413,18 +531,22 @@ export default function AddListingPage() {
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">NSFAS Accredited</p>
+              <p className="font-medium text-foreground">
+                NSFASAccredited Accredited
+              </p>
               <p className="text-sm text-muted-foreground">
-                This property accepts NSFAS-funded students
+                This property accepts NSFASAccredited-funded students
               </p>
             </div>
             <div
               className={cn(
                 "flex h-6 w-6 items-center justify-center rounded-full border-2",
-                nsfas ? "border-green-500 bg-green-500" : "border-border"
+                nsfasAccredited
+                  ? "border-green-500 bg-green-500"
+                  : "border-border"
               )}
             >
-              {nsfas && <Check className="h-4 w-4 text-white" />}
+              {nsfasAccredited && <Check className="h-4 w-4 text-white" />}
             </div>
           </button>
         </CardContent>
