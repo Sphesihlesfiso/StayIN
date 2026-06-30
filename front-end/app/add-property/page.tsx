@@ -50,6 +50,7 @@ import { placeTypes } from "../../lib/constants/PropertyAmenities"
 import { NearbyPlace } from "@/types/Property/nearbyPlace"
 import { useCreateProperty } from "@/hooks/Property/useProperty"
 import { GenderRestriction, PropertyType } from "@/types/Property/property"
+import { Rule } from "@/types/Property/PropertyRule"
 const propertyTypes = [
   { value: "SharingBackroom", label: "Backroom" },
   { value: "digs", label: "Digs / Shared House" },
@@ -83,6 +84,7 @@ export default function AddListingPage() {
   const [placeName, setPlaceName] = useState("")
   const [placeType, setPlaceType] = useState("")
   const [placeMinutes, setPlaceMinutes] = useState("")
+  const [rules,setRules]=useState([""])
   const { mutate, isError, isSuccess } = useCreateProperty()
   const handleProvinceChange = (value: string) => {
     setProvince(value as Province)
@@ -130,6 +132,9 @@ export default function AddListingPage() {
     setPhotos((prev) => prev.filter((_, i) => i !== index))
   }
 
+  const addRule =()=>{
+
+  }
   const handleSubmit = (asDraft: boolean) => {
     // if (!asDraft && (!name || !propertyType || !province || !rent)) {
     //   toast.error("Please fill in all required fields")
@@ -153,9 +158,6 @@ export default function AddListingPage() {
       water:  0,
       electricity:  0,
       // array of NearbyPlace objects
-    }
-    if (isError) {
-      toast.error("Nuh")
     }
     console.log(newProperty)
     mutate(newProperty)
@@ -675,10 +677,31 @@ export default function AddListingPage() {
         </CardHeader>
         <CardContent className="flex gap-2">
           <Input
-            placeholder="e.g. No loud music after 10pm, no smoking indoors, visitors must sign in..."
             className="rounded-xl"
-          />
-          <Button>+</Button>
+            placeholder="No sleep overs."
+            value={}
+            onChange={(e) => {
+              const newRule = e.target.value
+            }}
+          >
+            <Button className="rounded-xl" onClick={() => rules.push(newRule)}>
+              <Plus className="h-4 w-4" /> Add rule{" "}
+            </Button>
+          </Input>
+          {/* {rules.map((rule, i) => (
+            <Input
+              key={rule.id}
+              value={rule.content} 
+              onChange={(e) => {
+                const newRules = [...rules]
+                newRules[i] = { ...rule, content: e.target.value }
+                setRules(newRules)
+              }}
+            />
+          ))} */}
+          <Button className="rounded-xl" onClick={() => addRule()}>
+            <Plus className="h-4 w-4" /> Add rule{" "}
+          </Button>
         </CardContent>
       </Card>
 

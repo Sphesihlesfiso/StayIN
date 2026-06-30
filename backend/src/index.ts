@@ -30,10 +30,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", homeRoutes);
 app.use("/property", propertyRoutes);
 app.use("/auth", authRoutes);
-app.use("/amenity",amenitiesRoutes)
-
 app.use("/user",userRoutes)
-// app.use(errorHandler);
+app.use(errorHandler);
 app.listen(Port, () => {
   console.log(`Server is running on port ${Port}`);
 });

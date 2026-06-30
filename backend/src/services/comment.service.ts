@@ -9,15 +9,18 @@ export const getAllComments = async (id: number) => {
   try {
     return await prisma.comment.findMany({
       where: { propertyId: id },
-      select:{
-        content:true,
-        rating:true,
-        timestamp:true,
+      include: {
+        content: true,
+        rating: true,
+        timestamp: true,
 
         User:{
-          select:{username:true}
+          select:{
+            username:true
+
+          }
         }
-      }
+      },
     });
   } catch (error) {
     handlePrismaError(error);

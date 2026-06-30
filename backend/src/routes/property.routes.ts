@@ -11,6 +11,8 @@ router.get("/:propertyId", getUniqueProperty);
 router.post("/",uploadProperty)
 router.delete("/:propertyId", deleteProperty);
 router.patch("/:propertyId", updatePropertyById);
+
+
 router.use("/:propertyId/amenities", amenityRouter);
 router.use("/:propertyId/rules",ruleRouter)
 router.use("/:propertyId/comments", commentRouter);

@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { AppError } from "../errors/errors";
 import { handlePrismaError } from "../utils/handlePrismaError";
 import prisma from "../config/db";
+
 import {
   CreatePropertyInput,
   UpdatePropertyInput,
@@ -18,11 +19,31 @@ export const getAllProperties = async () => {
 export const getPropertyById = async (id: number) => {
   const property = await prisma.property.findUnique({
     where: { id },
+
     include: {
       NearbyPlaces: true,
-      Comments: true,
+      Comments: {
+        select: {
+          content:true,
+          rating:true,
+          timestamp:true,
+          User: {
+            select: {
+              username: true,
+              createdAt: true,
+            },
+          },
+        },
+      },
       rules: true,
       Amenities: true,
+      
+      User:{
+        select:{
+          username:true,
+          createdAt:true
+        }
+      }
     },
   });
   if (!property) throw new AppError("Property not found", 404);

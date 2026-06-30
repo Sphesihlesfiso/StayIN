@@ -54,7 +54,6 @@ model Property {
   suburb            String
   town              String
   Amenities         Amenity[]
-
   Comments          Comment[]
   NearbyPlaces      NearbyPlace[]
   User              User              @relation(fields: [landlordId], references: [id])
@@ -71,6 +70,7 @@ model User {
   role       Role       @default(TENANT)
   Comments   Comment[]
   Properties Property[]
+  createdAt DateTime @default(now())
 }
 model Rule {
   id Int @id @default(autoincrement())

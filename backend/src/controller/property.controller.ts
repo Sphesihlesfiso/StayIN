@@ -34,7 +34,7 @@ export const getUniqueProperty = asyncHandler(
 export const uploadProperty = asyncHandler(
   async (req: Request, res: Response) => {
     const parsed = createPropertySchema.safeParse(req.body);
-
+    console.log(parsed)
     if (!parsed.success) {
       return res
         .status(400)
