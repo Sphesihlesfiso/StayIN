@@ -39,7 +39,7 @@ import {
   Footprints,
   Plus,
 } from "lucide-react"
-import { amenitiesList } from "../../lib/constants/PropertyAmenities"
+import { amenitiesList } from '../../lib/constants/PropertyAmenities';
 import { toast } from "sonner"
 import {
   provinces,
@@ -64,7 +64,7 @@ export default function AddListingPage() {
   const router = useRouter()
   const [name, setTitle] = useState("")
   const [propertyType, setType] = useState<PropertyType | undefined>(undefined)
-
+  const [rules,setRules]=useState<Rule[]>([])
   const [suburb, setSuburb] = useState("")
   const [about, setabout] = useState("")
   const [rent, setPrice] = useState("")
@@ -84,7 +84,25 @@ export default function AddListingPage() {
   const [placeName, setPlaceName] = useState("")
   const [placeType, setPlaceType] = useState("")
   const [placeMinutes, setPlaceMinutes] = useState("")
-  const [rules,setRules]=useState([""])
+  const [newRuleText, setNewRuleText] = useState("")
+  const addRule = () => {
+    const trimmed = newRuleText.trim()
+    if (!trimmed) {
+      toast.error("Rule can't be empty")
+      return
+    }
+    const tempRule: Rule = {
+      id: Date.now(), // temp client-side id, replaced by DB id on save
+      content: trimmed,
+      propertyId: 0, // unknown until the property is created
+    }
+    setRules((prev) => [...prev, tempRule])
+    setNewRuleText("")
+  }
+
+  const removeRule = (index: number) => {
+    setRules((prev) => prev.filter((_, i) => i !== index))
+  }
   const { mutate, isError, isSuccess } = useCreateProperty()
   const handleProvinceChange = (value: string) => {
     setProvince(value as Province)
@@ -132,9 +150,7 @@ export default function AddListingPage() {
     setPhotos((prev) => prev.filter((_, i) => i !== index))
   }
 
-  const addRule =()=>{
-
-  }
+  
   const handleSubmit = (asDraft: boolean) => {
     // if (!asDraft && (!name || !propertyType || !province || !rent)) {
     //   toast.error("Please fill in all required fields")
@@ -147,16 +163,18 @@ export default function AddListingPage() {
       propertyType,
       suburb,
       about,
-      address:"26 bakker street",
+      address: "26 bakker street",
       rent: Number(rent),
       deposit: Number(deposit),
       nsfasAccredited,
       genderRestriction,
-      landlordId:1,
+      landlordId: 1,
       town,
       gas: 0,
-      water:  0,
-      electricity:  0,
+      water: 0,
+      electricity: 0,
+      nearbyPlaces,
+      selectedAmenities
       // array of NearbyPlace objects
     }
     console.log(newProperty)
@@ -167,7 +185,7 @@ export default function AddListingPage() {
   }
 
   const moveInTotal = (Number(rent) || 0) + (Number(deposit) || 0)
-
+  
   return (
     <div className="mx-auto w-full space-y-6 p-3 pb-4">
       {/* Header */}
@@ -667,6 +685,7 @@ export default function AddListingPage() {
       </Card>
 
       {/* House Rules */}
+      {/* House Rules */}
       <Card className="rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -675,33 +694,45 @@ export default function AddListingPage() {
           </CardTitle>
           <CardDescription>Set expectations for your tenants</CardDescription>
         </CardHeader>
-        <CardContent className="flex gap-2">
-          <Input
-            className="rounded-xl"
-            placeholder="No sleep overs."
-            value={}
-            onChange={(e) => {
-              const newRule = e.target.value
-            }}
-          >
-            <Button className="rounded-xl" onClick={() => rules.push(newRule)}>
-              <Plus className="h-4 w-4" /> Add rule{" "}
-            </Button>
-          </Input>
-          {/* {rules.map((rule, i) => (
+        <CardContent className="space-y-4">
+          {rules.length > 0 && (
+            <div className="space-y-2">
+              {rules.map((rule, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between rounded-xl border border-border bg-secondary/50 p-3"
+                >
+                  <p className="text-sm text-foreground">{rule.content}</p>
+                  <button
+                    type="button"
+                    onClick={() => removeRule(i)}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Remove rule</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex gap-2">
             <Input
-              key={rule.id}
-              value={rule.content} 
-              onChange={(e) => {
-                const newRules = [...rules]
-                newRules[i] = { ...rule, content: e.target.value }
-                setRules(newRules)
+              className="rounded-xl"
+              placeholder="No sleep overs."
+              value={newRuleText}
+              onChange={(e) => setNewRuleText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  addRule()
+                }
               }}
             />
-          ))} */}
-          <Button className="rounded-xl" onClick={() => addRule()}>
-            <Plus className="h-4 w-4" /> Add rule{" "}
-          </Button>
+            <Button className="rounded-xl" onClick={addRule}>
+              <Plus className="h-4 w-4" /> Add rule
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

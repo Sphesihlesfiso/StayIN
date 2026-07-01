@@ -1,5 +1,5 @@
 // schemas/property.schema.ts
-import { z } from "zod";
+import { string, z } from "zod";
 
 export const createPropertySchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -11,21 +11,24 @@ export const createPropertySchema = z.object({
   water: z.number().int().optional(),
   electricity: z.number().int().optional(),
   about: z.string().min(1, "About is required"),
-  
+
   landlordId: z.number().int().positive(),
   genderRestriction: z.enum(["Male", "Female", "Mixed"]),
-  propertyType: z.enum(["SingleBackroom",
-  "SharingBackroom",
-  "Apartment",
-  "SharingApartment",
-  "SingeFlat"
-  ,"Flat"]),
+  propertyType: z.enum([
+    "SingleBackroom",
+    "SharingBackroom",
+    "Apartment",
+    "SharingApartment",
+    "SingeFlat",
+    "Flat",
+  ]),
   suburb: z.string().min(1, "Suburb is required"),
   town: z.string().min(1, "Town is required"),
+  NearbyPlaces: z.string().array(),
+  Amenities: z.string().array(),
 });
 
 export const updatePropertySchema = createPropertySchema.partial();
 
 export type CreatePropertyInput = z.infer<typeof createPropertySchema>;
 export type UpdatePropertyInput = z.infer<typeof updatePropertySchema>;
-
