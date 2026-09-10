@@ -2,8 +2,9 @@
 import { Property } from "@/types/Property/property"
 import {crudOperations} from "@/lib/generalCrudeOperations"
 // Interacts cleanly with your /api base url mapping
-const propertyClient = crudOperations<Property>("property")
+const propertyClient = crudOperations<Property>("properties")
 const propertyClientHome = crudOperations<Property>("")
+
 
 export const getAllProperties = propertyClientHome.getAll
 export const getPropertyById = propertyClient.getById

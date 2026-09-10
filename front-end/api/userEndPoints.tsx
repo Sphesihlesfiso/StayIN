@@ -1,7 +1,7 @@
 import { User } from "@/types/User/user"
 import { crudOperations } from "@/lib/generalCrudeOperations"
 
-const userClient = crudOperations<User>("user")
+const userClient = crudOperations<User>("users")
 
 export const getUserById = userClient.getById
 export const updateUser = userClient.update
