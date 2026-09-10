@@ -28,9 +28,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", homeRoutes);
-app.use("/property", propertyRoutes);
+app.use("/properties", propertyRoutes);
 app.use("/auth", authRoutes);
-app.use("/user",userRoutes)
+app.use("/users",userRoutes)
 app.use(errorHandler);
 app.listen(Port, () => {
   console.log(`Server is running on port ${Port}`);

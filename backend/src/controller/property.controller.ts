@@ -15,10 +15,11 @@ import {
   createPropertySchema,
   updatePropertySchema,
 } from "../../schema/property.schema";
-
 export const fetchAllProperties = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log(`here`)
     const properties = await getAllProperties();
+    console.log(`properties ${properties}`)
     res.status(200).json(successResponse(properties, "Properties fetched"));
   },
 );

@@ -10,7 +10,10 @@ import {
 
 export const getAllProperties = async () => {
   try {
-    return await prisma.property.findMany();
+    const properties =await prisma.property.findMany();
+    console.log(`properties ${properties}`)
+    return properties;
+    
   } catch (error) {
     throw handlePrismaError(error);
   }
@@ -50,14 +53,23 @@ export const getPropertyById = async (id: number) => {
   return property;
 };
 
-export const addProperty = async (data: CreatePropertyInput) => {
-  try {
-    return await prisma.property.create({ data });
-  } catch (error) {
-    throw handlePrismaError(error);
-  }
-};
+export const addProperty = async (data: any) => {
+  const { Amenities, landlordId, ...propertyData } = data;
 
+  return await prisma.property.create({
+    data: {
+      ...propertyData,
+      landlordId, // Use direct foreign key
+      ...(Amenities && Amenities.length > 0
+        ? {
+            Amenities: {
+              create: Amenities.map((name: string) => ({ name })),
+            },
+          }
+        : {}),
+    },
+  });
+};
 export const deletePropertyById = async (id: number) => {
   try {
     await prisma.property.delete({ where: { id } });
@@ -66,10 +78,23 @@ export const deletePropertyById = async (id: number) => {
   }
 };
 
-export const updateProperty = async (id: number, data: UpdatePropertyInput) => {
-  try {
-    return await prisma.property.update({ where: { id }, data });
-  } catch (error) {
-    throw handlePrismaError(error);
-  }
+export const updateProperty = async (id: number, data: any) => {
+  // 1. Pull out landlordId and Amenities so they don't get passed as raw fields
+  const { landlordId, Amenities, ...propertyData } = data;
+
+  return await prisma.property.update({
+    where: { id: Number(id) },
+    data: {
+      ...propertyData,
+      // 2. Only include Amenities if provided, using nested relation syntax
+      ...(Amenities && Array.isArray(Amenities)
+        ? {
+            Amenities: {
+              deleteMany: {}, // clears existing relations for this property
+              create: Amenities.map((name: string) => ({ name })),
+            },
+          }
+        : {}),
+    },
+  });
 };
