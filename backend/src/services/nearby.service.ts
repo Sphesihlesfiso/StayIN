@@ -1,7 +1,7 @@
 import {
   CreateNearByPlaceInput,
   UpdateNearByPlaceInput,
-} from "../../schema/nearbyPlace.schema";
+} from "@shared/schema/nearbyPlace.schema";
 import prisma from "../config/db";
 import { handlePrismaError } from "../utils/handlePrismaError";
 import { AppError } from "../errors/errors";

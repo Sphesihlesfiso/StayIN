@@ -1,4 +1,4 @@
-import { safeParse } from './../../node_modules/zod/src/v4/classic/parse';
+
 import { Request, Response } from "express";
 import {
   addProperty,
@@ -14,8 +14,8 @@ import {
   CreatePropertyInput,
   createPropertySchema,
   updatePropertySchema,
-} from "../../schema/property.schema";
-
+} from "@shared/schema/property.schema";
+import {GenderRestriction} from "@prisma/client"
 export const fetchAllProperties = asyncHandler(
   async (req: Request, res: Response) => {
     const properties = await getAllProperties();

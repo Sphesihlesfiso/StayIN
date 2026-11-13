@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const saved_controller_1 = require("../controller/saved.controller");
+const protectRoute_1 = require("../middleware/protectRoute");
+const router = (0, express_1.Router)();
+router.use(protectRoute_1.protect);
+router.get("/", saved_controller_1.getSavedPlaces);
+router.post("/:id", saved_controller_1.savePlace);
+router.delete("/:id", saved_controller_1.removeSavedPlace);
+exports.default = router;

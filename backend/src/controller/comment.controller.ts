@@ -1,5 +1,5 @@
 import { safeParse } from "./../../node_modules/zod/src/v4/classic/parse";
-import { createCommentSchema,  CreateCommentInput, updateCommentSchema } from '../../schema/comment.schema'
+import { createCommentSchema,  CreateCommentInput, updateCommentSchema } from '@shared/schema/comment.schema'
 import { asyncHandler } from "../utils/asyncHandler";
 import {
   addComment,

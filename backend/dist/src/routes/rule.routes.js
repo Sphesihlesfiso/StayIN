@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const rule_controller_1 = require("../controller/rule.controller");
+const router = (0, express_1.Router)({ mergeParams: true });
+router.get("/", rule_controller_1.fetchAllRules);
+router.post("/", rule_controller_1.postRule);
+router.get("/:ruleId", rule_controller_1.fetchRuleById);
+router.patch("/:ruleId", rule_controller_1.updateRuleById);
+router.delete("/:ruleId", rule_controller_1.deleteRuleById);
+exports.default = router;

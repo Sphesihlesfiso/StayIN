@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const roommate_controller_1 = require("../controller/roommate.controller");
+const protectRoute_1 = require("../middleware/protectRoute");
+const router = (0, express_1.Router)();
+router.use((0, protectRoute_1.requireRole)("TENANT"));
+router.get("/", roommate_controller_1.getRoommateProfile);
+router.put("/", roommate_controller_1.saveRoommateProfile);
+router.delete("/", roommate_controller_1.deleteRoommateProfile);
+exports.default = router;

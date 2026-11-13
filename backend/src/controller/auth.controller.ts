@@ -1,10 +1,11 @@
 import { signIn, signUp } from "../services/auth.service";
 import { asyncHandler } from "../utils/asyncHandler";
 import { Request, Response } from "express";
-import { createUserSchema } from "../../schema/user.schema";
-import { loginUserSchema } from "../../schema/auth.schema";
 
 import { successResponse, validationError } from "../utils/apiResponce";
+import { createUserSchema } from '@shared/schema/user.schema';
+import { loginUserSchema } from '@shared/schema/auth.schema';
+
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {

@@ -13,11 +13,7 @@ import {
   errorResponse,
   validationError,
 } from "../utils/apiResponce";
-import {
-  createAmenitySchema,
-  updateAmenitySchema,
-} from "../../schema/amenity.schema";
-
+import {createAmenitySchema, updateAmenitySchema} from "@shared/schema/amenity.schema"
 export const fetchAllAmenities = asyncHandler(
   async (req: Request, res: Response) => {
     const amenities = await getAllAmenities();

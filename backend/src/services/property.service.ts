@@ -2,12 +2,14 @@ import { Prisma } from "@prisma/client";
 import { AppError } from "../errors/errors";
 import { handlePrismaError } from "../utils/handlePrismaError";
 import prisma from "../config/db";
-import { CreatePropertyInput,UpdatePropertyInput } from "../../schema/property.schema";
+import { CreatePropertyInput,UpdatePropertyInput } from "@shared/schema/property.schema";
+import {GenderRestriction} from "@prisma/client"
 
 export const getAllProperties = async () => {
   try {
     return await prisma.property.findMany();
   } catch (error) {
+    //when console login the error it works but not when handling it.
     throw handlePrismaError(error);
   }
 };
@@ -20,7 +22,7 @@ export const getPropertyById = async (id: number) => {
 
 export const addProperty = async (data: CreatePropertyInput) => {
   try {
-    return await prisma.property.create({ data });
+    return await prisma.property.create({ data});
   } catch (error) {
     throw handlePrismaError(error);
   }

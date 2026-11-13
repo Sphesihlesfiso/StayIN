@@ -1,24 +1,16 @@
 import { AppError } from "../errors/errors";
 import { Prisma } from "@prisma/client";
 
-export const handlePrismaError = (error: unknown) => {
+export const handlePrismaError = (error: unknown):never => {
+   console.error("Prisma Error:", error);
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    switch (error.code) {
-      case "P2025":
-        throw new AppError("Record not found", 404);
-      case "P2002":
-        throw new AppError("Duplicate entry", 409);
-    
-      case "P2003":
-        throw new AppError("Related record not found", 400);
-
-      default:
-        throw new AppError("Database error", 500);
+    throw new Error(`Database request error (${error.code}): ${error.message}`);
     }
-  }
-  if (error instanceof Prisma.PrismaClientValidationError) {
-    console.log(error)
-    throw new AppError("Invalid data provided", 400);
-  }
-  throw new AppError("Internal server error", 500);
-};
+    throw new Error("Database error");
+  };
+  // elif (error instanceof Prisma.PrismaClientValidationError) {
+  
+  //   throw new  Error("Invalid data provided", 400);
+  // }
+  // throw new AppError("Internal server error", 500);
+

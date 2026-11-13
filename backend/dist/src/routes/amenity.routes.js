@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const amenity_controller_1 = require("../controller/amenity.controller");
+const router = (0, express_1.Router)({ mergeParams: true });
+router.get("/", amenity_controller_1.fetchAllAmenities);
+router.post("/", amenity_controller_1.postAmenity);
+router.patch("/:amenityId", amenity_controller_1.updateAmenityById);
+router.delete("/:amenityId", amenity_controller_1.deleteAmenityById);
+exports.default = router;

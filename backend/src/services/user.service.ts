@@ -1,8 +1,8 @@
 import prisma from "../config/db";
 import { Prisma } from "@prisma/client";
 import { handlePrismaError } from "../utils/handlePrismaError";
-import { CreateUserInput } from "../../schema/auth.schema";
-import { UpdateUserInput } from "../../schema/user.schema";
+import { CreateUserInput } from "@shared/schema/auth.schema";
+import { UpdateUserInput } from "@shared/schema/user.schema";
 export const getUser = async (id: number) => {
   try {
     return await prisma.user.findUnique({ where: { id } });

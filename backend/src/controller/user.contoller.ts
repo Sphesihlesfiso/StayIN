@@ -4,7 +4,7 @@ import { deleteUser, getUser } from "../services/user.service";
 import { updateUser } from "../services/user.service";
 import { successResponse, validationError } from "../utils/apiResponce";
 
-import { updateUserSchema } from "../../schema/user.schema";
+import { updateUserSchema } from "@shared/schema/user.schema";
 export const deleteUserAccount = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);

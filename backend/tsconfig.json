@@ -2,9 +2,14 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
-    "rootDir": "./",
+    "rootDir": "..",
     "outDir": "./dist",
     "esModuleInterop": true,
-    "strict": true
-  }
+    "strict": true,
+    "paths": {
+      "@shared/*":["../shared/*"],
+      "zod": ["./node_modules/zod"]
+    }
+  },
+   "include": ["src/**/*", "../shared/**/*"]
 }

@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const property_controller_1 = require("../controller/property.controller");
+const protectRoute_1 = require("../middleware/protectRoute");
+const router = (0, express_1.Router)();
+router.get("/", property_controller_1.fetchAllProperties);
+router.get("/locations", property_controller_1.getLocationSuggestions);
+router.get("/:id", protectRoute_1.identify, property_controller_1.getUniqueProperty);
+router.post("/", protectRoute_1.protect, (0, protectRoute_1.requireRole)("LANDLORD"), property_controller_1.uploadProperty);
+router.patch("/:id", protectRoute_1.protect, property_controller_1.updatePropertyById);
+router.delete("/:id", protectRoute_1.protect, property_controller_1.deleteProperty);
+exports.default = router;
