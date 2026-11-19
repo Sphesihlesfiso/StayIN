@@ -1,52 +1,49 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
-import {Footer2} from "@/components/footer2"
-import { CardImage } from '../components/property-card';
-import { PropertyPaging } from '../components/paging';
-// import SearchFilter from '../components/search-filter';
-
-//TODO
-//Must fix sidebar to not overlap with footer
-//MUst make sidebar responsive to smaller device screens.
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { Footer2 } from "@/components/footer2"
+import { CardImage } from "../components/property-card"
+import { PropertyPaging } from "../components/paging"
+import SearchFilter, { type PropertyFilters } from "@/components/search-filter"
 export const iframeHeight = "800px"
+export const description = "A responsive property listing page."
+function handleApplyFilters(filters: PropertyFilters) {
+  console.log("Applied filters:", filters)
 
-export const description = "A sidebar with a header and a search form."
+  // Later: connect this to your TanStack Query property search.
+}
 export default function Home() {
   return (
-    <div className="[--header-height:calc(--spacing(14))]">
-      <SidebarProvider className="flex flex-col">
+    <div className="flex min-h-screen flex-col">
+      <SidebarProvider className="flex min-h-screen flex-col">
         <SiteHeader />
-        <div className="flex flex-1">
+        <div className="mx-6">
+          <SearchFilter onApply={handleApplyFilters} />
+        </div>
+        <div className="flex flex-1 items-stretch">
           <AppSidebar />
-          <SidebarInset>
-            <div className="flex flex-1 flex-col gap-4 p-4">
-                {/* <SearchFilter/> */}
-              <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                {/* <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" /> */}
-                <CardImage/>
-                  <CardImage/>
-                    <CardImage/>
-                      <CardImage/>
-                        <CardImage/>
-                          <CardImage/>
+
+          <SidebarInset className="min-w-0 flex-1">
+            <main className="flex flex-1 flex-col gap-6 p-4 md:p-6">
+              <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                <CardImage />
+                <CardImage />
+                <CardImage />
+                <CardImage />
+                <CardImage />
+                <CardImage />
+              </section>
+
+              <div className="mt-auto flex justify-center py-6">
+                <PropertyPaging />
               </div>
-              <PropertyPaging/>
-                <Footer2/>
-            </div>
+            </main>
           </SidebarInset>
         </div>
       </SidebarProvider>
-    
-   
+
+      {/* Footer outside the sidebar layout */}
+      <Footer2 />
     </div>
   )
 }
