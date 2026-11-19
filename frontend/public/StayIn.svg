@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="StayIn Favicon">
+  <defs>
+    <radialGradient id="mintCircleGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="52%" stop-color="#F6FCFA" stop-opacity="0.75" />
+      <stop offset="84%" stop-color="#E1F3EE" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#CBE9E2" stop-opacity="1" />
+    </radialGradient>
+
+    <linearGradient id="windowGlowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F37920" />
+      <stop offset="100%" stop-color="#FBB43A" />
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed Circular Mint Emblem -->
+  <circle cx="256" cy="256" r="250" fill="url(#mintCircleGrad)" />
+
+  <!-- Scaled-up House & Chimney Group filling the frame -->
+  <g transform="translate(256, 256) scale(1.42) translate(-256, -242)">
+    <!-- Chimney & Rising Smoke -->
+    <path d="M 314 173 C 314 171.3 315.3 170 317 170 L 337 170 C 338.7 170 340 171.3 340 173 L 340 207 L 314 187 Z" fill="#F4D348" />
+    <path d="M 326 164 C 333 156 333 149 326 142 C 319 135 319 128 327 121 C 324 128 325 133 331 139 C 337 145 336 155 326 164 Z" fill="#F4D348" />
+
+    <!-- Pitched Roof -->
+    <path d="M 140 248 L 256 160 L 372 248" fill="none" stroke="#27738B" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Solid Gable & Main House Silhouette with Cutout Doorway & Ground Extensions -->
+    <path fill="#144B60" fill-rule="evenodd" d="
+      M 131 329
+      L 164 325
+      L 164 252
+      L 256 181
+      L 348 252
+      L 348 325
+      L 381 329
+      C 382.5 329.2 382.5 331 381 331
+      L 248 331
+      L 248 276
+      A 32 32 0 0 0 184 276
+      L 184 331
+      L 131 331
+      C 129.5 331 129.5 329.2 131 329
+      Z
+    " />
+
+    <!-- Open Arched Door Leaf & Handle -->
+    <path d="M 190 274 A 21 21 0 0 1 228 271 L 228 326 L 190 331 Z" fill="#144B60" />
+    <circle cx="220" cy="293" r="3" fill="#FFFFFF" />
+
+    <!-- 4-Pane Arched Window -->
+    <path d="M 274 272 L 274 270 A 22 22 0 0 1 295 248 L 295 272 Z" fill="url(#windowGlowGrad)" />
+    <path d="M 300 248 A 22 22 0 0 1 321 270 L 321 272 L 300 272 Z" fill="url(#windowGlowGrad)" />
+    <rect x="274" y="277" width="21" height="23" rx="1.5" fill="url(#windowGlowGrad)" />
+    <rect x="300" y="277" width="21" height="23" rx="1.5" fill="url(#windowGlowGrad)" />
+  </g>
+</svg>
