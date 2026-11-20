@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -53,6 +53,9 @@ import {
 // VALIDATION
 // -----------------------------
 
+const MAX_IMAGES = 10
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
+
 const propertySchema = z.object({
   title: z.string().min(5, "Title must contain at least 5 characters"),
   description: z
@@ -66,12 +69,14 @@ const propertySchema = z.object({
   suburb: z.string().min(1, "Enter a suburb"),
   address: z.string().min(1, "Enter the property address"),
 
-  bedrooms: z.coerce.number().min(1),
-  bathrooms: z.coerce.number().min(1),
-  availableRooms: z.coerce.number().min(1),
+  bedrooms: z.coerce.number().min(1, "At least 1 bedroom is required"),
+  bathrooms: z.coerce.number().min(1, "At least 1 bathroom is required"),
+  availableRooms: z.coerce
+    .number()
+    .min(1, "At least 1 available room is required"),
 
   monthlyRent: z.coerce.number().positive("Enter a valid rental amount"),
-  deposit: z.coerce.number().min(0),
+  deposit: z.coerce.number().min(0, "Deposit cannot be negative"),
 
   utilitiesIncluded: z.boolean(),
 
@@ -88,7 +93,18 @@ const propertySchema = z.object({
   availableFrom: z.string().min(1, "Select an availability date"),
 })
 
-type PropertyFormValues = z.infer<typeof propertySchema>
+export type PropertyFormValues = z.infer<typeof propertySchema>
+
+interface PropertyFormProps {
+  initialData?: Partial<PropertyFormValues>
+  existingImages?: string[]
+  mode: "create" | "edit"
+  onSave: (
+    data: PropertyFormValues,
+    images: File[],
+    removedImages: string[]
+  ) => Promise<void>
+}
 
 // -----------------------------
 // OPTIONS
@@ -128,106 +144,124 @@ const provinces = [
   "Western Cape",
 ]
 
+const defaultFormValues: PropertyFormValues = {
+  title: "",
+  description: "",
+  propertyType: "",
+  province: "",
+  city: "",
+  suburb: "",
+  address: "",
+  bedrooms: 1,
+  bathrooms: 1,
+  availableRooms: 1,
+  monthlyRent: 0,
+  deposit: 0,
+  utilitiesIncluded: false,
+  genderPreference: "any",
+  studentFriendly: true,
+  nsfasAccepted: false,
+  amenities: [],
+  rules: [],
+  parking: false,
+  furnished: false,
+  availableFrom: "",
+}
+
 // -----------------------------
 // COMPONENT
 // -----------------------------
 
-export default function CreatePropertyForm() {
-  const [images, setImages] = useState<File[]>([])
-  const [imagePreviews, setImagePreviews] = useState<string[]>([])
-
+export default function PropertyForm({
+  initialData,
+  existingImages = [],
+  mode,
+  onSave,
+}: PropertyFormProps) {
   const form = useForm<PropertyFormValues>({
-    resolver: zodResolver(propertySchema),
-
+    resolver: zodResolver(propertySchema) as never,
     defaultValues: {
-      title: "",
-      description: "",
-      propertyType: "",
-
-      province: "",
-      city: "",
-      suburb: "",
-      address: "",
-
-      bedrooms: 1,
-      bathrooms: 1,
-      availableRooms: 1,
-
-      monthlyRent: 0,
-      deposit: 0,
-
-      utilitiesIncluded: false,
-
-      genderPreference: "any",
-      studentFriendly: true,
-      nsfasAccepted: false,
-
-      amenities: [],
-      rules: [],
-
-      parking: false,
-      furnished: false,
-
-      availableFrom: "",
+      ...defaultFormValues,
+      ...initialData,
     },
   })
+
+  const [images, setImages] = useState<File[]>([])
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [removedImages, setRemovedImages] = useState<string[]>([])
+
+  const previewsRef = useRef<string[]>([])
+  previewsRef.current = imagePreviews
+
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        ...defaultFormValues,
+        ...initialData,
+      })
+    }
+  }, [initialData, form])
+
+  useEffect(() => {
+    return () => {
+      previewsRef.current.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [])
 
   // -----------------------------
   // IMAGE HANDLING
   // -----------------------------
 
+  const activeExistingImages = existingImages.filter(
+    (image) => !removedImages.includes(image)
+  )
+  const totalImageCount = activeExistingImages.length + images.length
+
   function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files || [])
+    const remaining = Math.max(0, MAX_IMAGES - totalImageCount)
 
-    const remaining = Math.max(0, 10 - images.length)
+    const validFiles = files
+      .filter((file) => ACCEPTED_IMAGE_TYPES.includes(file.type))
+      .slice(0, remaining)
 
-    const selected = files.slice(0, remaining)
-
-    const validFiles = selected.filter((file) =>
-      ["image/jpeg", "image/png", "image/webp"].includes(file.type)
-    )
-
-    setImages((previous) => [...previous, ...validFiles])
-
-    setImagePreviews((previous) => [
-      ...previous,
-      ...validFiles.map((file) => URL.createObjectURL(file)),
-    ])
+    if (validFiles.length > 0) {
+      const nextPreviews = validFiles.map((file) => URL.createObjectURL(file))
+      setImages((previous) => [...previous, ...validFiles])
+      setImagePreviews((previous) => [...previous, ...nextPreviews])
+    }
 
     event.target.value = ""
   }
 
-  function removeImage(index: number) {
-    URL.revokeObjectURL(imagePreviews[index])
+  function removeNewImage(index: number) {
+    const targetPreview = imagePreviews[index]
+    if (targetPreview) {
+      URL.revokeObjectURL(targetPreview)
+    }
 
     setImages((previous) => previous.filter((_, i) => i !== index))
-
     setImagePreviews((previous) => previous.filter((_, i) => i !== index))
+  }
+
+  function handleResetForm() {
+    imagePreviews.forEach((url) => URL.revokeObjectURL(url))
+    setImages([])
+    setImagePreviews([])
+    setRemovedImages([])
+    form.reset({
+      ...defaultFormValues,
+      ...initialData,
+    })
   }
 
   // -----------------------------
   // SUBMISSION
   // -----------------------------
 
-  async function onSubmit(data: PropertyFormValues) {
-    const formData = new FormData()
-
-    formData.append("data", JSON.stringify(data))
-
-    images.forEach((image) => {
-      formData.append("images", image)
-    })
-
-    console.log("Property data:", data)
-    console.log("Property images:", images)
-
-    // Connect your TanStack Query mutation here.
-    // await createPropertyMutation.mutateAsync(formData)
+  async function handleSubmit(data: PropertyFormValues) {
+    await onSave(data, images, removedImages)
   }
-
-  // -----------------------------
-  // REUSABLE FIELD COMPONENT
-  // -----------------------------
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 py-8">
@@ -237,16 +271,17 @@ export default function CreatePropertyForm() {
         <Badge variant="secondary">Landlord dashboard</Badge>
 
         <h1 className="text-3xl font-bold tracking-tight">
-          List your property
+          {mode === "edit" ? "Edit property listing" : "List your property"}
         </h1>
 
         <p className="text-muted-foreground">
-          Provide details about your accommodation to help tenants find their
-          next home.
+          {mode === "edit"
+            ? "Update your accommodation details, pricing, or photos."
+            : "Provide details about your accommodation to help tenants find their next home."}
         </p>
       </div>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         {/* BASIC INFORMATION */}
 
         <Card>
@@ -439,8 +474,15 @@ export default function CreatePropertyForm() {
                       <Input
                         id={name}
                         type="number"
-                        min="1"
-                        {...field}
+                        min={1}
+                        name={field.name}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
+                        value={Number.isNaN(field.value) ? "" : field.value}
+                        onChange={(e) => {
+                          const val = e.target.value
+                          field.onChange(val === "" ? "" : Number(val))
+                        }}
                         aria-invalid={fieldState.invalid}
                       />
 
@@ -519,8 +561,15 @@ export default function CreatePropertyForm() {
                       <Input
                         id={name}
                         type="number"
-                        min="0"
-                        {...field}
+                        min={0}
+                        name={field.name}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
+                        value={Number.isNaN(field.value) ? "" : field.value}
+                        onChange={(e) => {
+                          const val = e.target.value
+                          field.onChange(val === "" ? "" : Number(val))
+                        }}
                         aria-invalid={fieldState.invalid}
                       />
 
@@ -761,8 +810,8 @@ export default function CreatePropertyForm() {
             </div>
 
             <CardDescription>
-              Upload up to 10 images of your accommodation. JPG, PNG and WEBP
-              supported.
+              Upload up to {MAX_IMAGES} images of your accommodation. JPG, PNG
+              and WEBP supported.
             </CardDescription>
           </CardHeader>
 
@@ -789,41 +838,57 @@ export default function CreatePropertyForm() {
               />
             </label>
 
-            {imagePreviews.length > 0 && (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                {imagePreviews.map((preview, index) => (
-                  <div
-                    key={preview}
-                    className="group relative aspect-square overflow-hidden rounded-lg border"
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {activeExistingImages.map((image) => (
+                <div
+                  key={image}
+                  className="group relative aspect-square overflow-hidden rounded-lg border"
+                >
+                  <img
+                    src={image}
+                    alt="Existing property"
+                    className="h-full w-full object-cover"
+                  />
+
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-8 w-8"
+                    onClick={() => setRemovedImages((prev) => [...prev, image])}
                   >
-                    <img
-                      src={preview}
-                      alt={`Property image ${index + 1}`}
-                      className="h-full w-full object-cover"
-                    />
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
 
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-2 right-2 h-8 w-8"
-                      onClick={() => removeImage(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+              {imagePreviews.map((preview, index) => (
+                <div
+                  key={preview}
+                  className="relative aspect-square overflow-hidden rounded-lg border"
+                >
+                  <img
+                    src={preview}
+                    alt="New property image"
+                    className="h-full w-full object-cover"
+                  />
 
-                    {index === 0 && (
-                      <Badge className="absolute bottom-2 left-2">
-                        Cover image
-                      </Badge>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-8 w-8"
+                    onClick={() => removeNewImage(index)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
 
             <p className="text-xs text-muted-foreground">
-              {images.length}/10 images uploaded.
+              {totalImageCount}/{MAX_IMAGES} images selected ({images.length}{" "}
+              new).
             </p>
           </CardContent>
         </Card>
@@ -831,18 +896,7 @@ export default function CreatePropertyForm() {
         {/* SUBMIT */}
 
         <div className="flex flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              form.reset()
-
-              imagePreviews.forEach((preview) => URL.revokeObjectURL(preview))
-
-              setImages([])
-              setImagePreviews([])
-            }}
-          >
+          <Button type="button" variant="outline" onClick={handleResetForm}>
             Reset form
           </Button>
 
@@ -851,7 +905,11 @@ export default function CreatePropertyForm() {
             size="lg"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "Submitting..." : "Publish property"}
+            {form.formState.isSubmitting
+              ? "Saving..."
+              : mode === "edit"
+                ? "Save changes"
+                : "Publish property"}
           </Button>
         </div>
       </form>

@@ -4,6 +4,7 @@ import LoginPage from './pages/Sign-in';
 import SignupPage from './pages/Sign-up';
 import Property from "./pages/Property";
 import Upload from "./pages/Upload";
+import EditProperty from "./pages/Edit";
 
 export  const router = createBrowserRouter([
   {
@@ -15,6 +16,7 @@ export  const router = createBrowserRouter([
       },
             {path:"register",Component:SignupPage},
             {path:"property",Component:Property},
-            {path:"upload",Component:Upload}
+            {path:"upload",Component:Upload},
+          { path: "/properties/:id/edit", Component: EditProperty }
 
 ]);
