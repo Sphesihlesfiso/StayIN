@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { SlidersHorizontal, RotateCcw } from "lucide-react"
+import { RotateCcw, Search } from "lucide-react"
 
 const accommodationTypes = [
   { id: "single", label: "Single room" },
@@ -61,17 +61,17 @@ export default function SearchFilter({ onApply }: SearchFilterProps) {
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <div>
+      {/* <div>
         <h2 className="text-xl font-semibold">Find accommodation</h2>
         <p className="text-sm text-muted-foreground">
           Filter properties to find a place that suits you.
         </p>
-      </div>
+      </div> */}
 
       <Popover>
         <PopoverTrigger render={<Button variant="outline" className="gap-2" />}>
-          <SlidersHorizontal className="h-4 w-4" />
-          Filters
+          <Search className="h-4 w-4" />
+          Search
           {(nsfasAccredited || selectedTypes.length > 0) && (
             <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
               {selectedTypes.length + (nsfasAccredited ? 1 : 0)}

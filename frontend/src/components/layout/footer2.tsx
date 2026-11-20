@@ -5,44 +5,46 @@
 //   FaLinkedin,
 //   FaTwitter,
 // } from "react-icons/fa";
-// 
+//
 // import {
 //   Logo,
 //   LogoImageDesktop,
 //   LogoImageMobile,
 // } from "@/components/shadcnblocks/logo";
-import { cn } from "cn";
+
+import { cn } from "cn"
+const year = new Date().getFullYear()
+import { HeartIcon } from "lucide-react"
 interface FooterLink {
-  name: string;
-  href: string;
+  name: string
+  href: string
 }
 interface FooterSection {
-  title: string;
-  links: FooterLink[];
+  title: string
+  links: FooterLink[]
 }
 interface FooterLogo {
-  url: string;
-  src: string;
-  alt: string;
-  title: string;
+  url: string
+  src: string
+  alt: string
+  title: string
 }
 
 interface FooterBasicProps {
-  logo?: FooterLogo;
-  description?: string;
-  sections?: FooterSection[];
-  copyright?: string;
-  legalLinks?: FooterLink[];
-  className?: string;
+  logo?: FooterLogo
+  description?: string
+  sections?: FooterSection[]
+  copyright?: React.ReactNode // <-- Changed from 'string' to 'React.ReactNode'
+  legalLinks?: FooterLink[]
+  className?: string
 }
 
 interface Footer2Props extends FooterBasicProps {
-  logoClassName?: string;
+  logoClassName?: string
 }
-type Props = Partial<Footer2Props>;
+type Props = Partial<Footer2Props>
 
 const defaultProps: Footer2Props = {
-  
   description: "Find your next home or teenant with us.",
   sections: [
     {
@@ -84,43 +86,48 @@ const defaultProps: Footer2Props = {
       ],
     },
   ],
-  copyright: "© 2024 Shadcnblocks.com. All rights reserved.",
+  copyright: (
+    <>
+      Made with{" "}
+      <HeartIcon className="inline h-3.5 w-3.5 fill-red-600 text-red-600" /> in
+      South Africa © {year} StayIn.
+    </>
+  ),
   legalLinks: [
     { name: "Terms and Conditions", href: "#" },
     { name: "Privacy Policy", href: "#" },
   ],
-};
+}
 
-const MAX_SECTIONS = 4;
+const MAX_SECTIONS = 4
 
 const Footer2 = (props: Props) => {
-  const {  description, sections, copyright, legalLinks, className } = {
+  const { description, sections, copyright, legalLinks, className } = {
     ...defaultProps,
     ...props,
-  };
+  }
 
-  const visibleSections = (sections ?? []).slice(0, MAX_SECTIONS);
+  const visibleSections = (sections ?? []).slice(0, MAX_SECTIONS)
 
   return (
-    <section className={cn("py-32", className)}>
-      <div className="container mx-auto">
+    <section className={cn("w-full py-16 md:py-24", className)}>
+      <div className="w-full px-6 md:px-8">
         <footer>
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
-            <div className="col-span-2 mb-8 lg:mb-0">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-3 xl:grid-cols-6">
+            <div className="col-span-2 mb-8 md:col-span-3 xl:col-span-2 xl:mb-0">
               <div className="flex items-center lg:justify-start">
-                <div className="">
-          
-          <h1 className="text-2xl p-0.5 text-primary font-bold">
-            StayIn.
-          </h1>
-        </div>
+                <div>
+                  <h1 className="p-0.5 text-2xl font-bold text-primary">
+                    StayIn.
+                  </h1>
+                </div>
               </div>
               <p className="mt-4 text-sm font-medium text-muted-foreground">
                 {description}
               </p>
             </div>
             {visibleSections.map((section, sectionIdx) => (
-              <div key={sectionIdx}>
+              <div key={sectionIdx} className="min-w-0">
                 <h3 className="mb-4 text-sm font-semibold tracking-tight">
                   {section.title}
                 </h3>
@@ -137,9 +144,9 @@ const Footer2 = (props: Props) => {
               </div>
             ))}
           </div>
-          <div className="mt-8 flex flex-col justify-between gap-4 border-t border-border pt-8 text-xs font-medium text-muted-foreground md:flex-row md:items-center">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-8 text-xs font-medium text-muted-foreground">
             <p>{copyright}</p>
-            <ul className="flex gap-4">
+            <ul className="flex flex-wrap gap-4">
               {legalLinks?.map((link, linkIdx) => (
                 <li key={linkIdx} className="underline hover:text-primary">
                   <a href={link.href}>{link.name}</a>
@@ -150,7 +157,7 @@ const Footer2 = (props: Props) => {
         </footer>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export { Footer2 };
+export { Footer2 }

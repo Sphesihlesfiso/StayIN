@@ -2,7 +2,7 @@
 
 import PropertyForm, {
   type PropertyFormValues,
-} from "@/components/property-form"
+} from "@/components/property/property-form"
 
 export default function Upload() {
   async function handleCreate(
