@@ -48,7 +48,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
+import { provinces, ruleOptions, amenityOptions } from "../../assets/json-files"
 // -----------------------------
 // VALIDATION
 // -----------------------------
@@ -109,40 +109,6 @@ interface PropertyFormProps {
 // -----------------------------
 // OPTIONS
 // -----------------------------
-
-const amenityOptions = [
-  "WiFi",
-  "Swimming pool",
-  "Laundry",
-  "CCTV",
-  "Security",
-  "Shuttle",
-  "Study area",
-  "Garden",
-  "Gym",
-  "Backup power",
-]
-
-const ruleOptions = [
-  "No smoking",
-  "No pets",
-  "No parties",
-  "No loud noise",
-  "Visitors allowed",
-  "No overnight guests",
-]
-
-const provinces = [
-  "Eastern Cape",
-  "Free State",
-  "Gauteng",
-  "KwaZulu-Natal",
-  "Limpopo",
-  "Mpumalanga",
-  "Northern Cape",
-  "North West",
-  "Western Cape",
-]
 
 const defaultFormValues: PropertyFormValues = {
   title: "",

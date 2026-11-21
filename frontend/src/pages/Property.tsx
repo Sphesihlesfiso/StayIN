@@ -1,4 +1,3 @@
-import { Footer2 } from "@/components/footer2"
 import MorphSlider from "@/components/MorphSlider"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -11,24 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { BsWhatsapp } from "react-icons/bs"
-
-const items = [
-  {
-    image:
-      "https://images.unsplash.com/photo-1782977389500-dd7adad33ebe?q=80&w=1600&auto=format&fit=crop",
-    caption: "Living room",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1781499455083-6ccc3beb20cd?q=80&w=1600&auto=format&fit=crop",
-    caption: "Bedroom",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1776394254711-4a0d7345269a?q=80&w=1600&auto=format&fit=crop",
-    caption: "Exterior",
-  },
-]
+import { amenities, items, nearbyPlaces } from "../assets/json-files"
 
 export default function Property() {
   return (
@@ -126,7 +108,7 @@ export default function Property() {
 
               <CardContent>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                  {["WiFi", "Shuttle", "CCTV"].map((amenity) => (
+                  {amenities.map((amenity) => (
                     <div
                       key={amenity}
                       className="rounded-lg border p-4 text-sm font-medium"
@@ -149,19 +131,17 @@ export default function Property() {
 
               <CardContent>
                 <div className="space-y-4">
-                  {["Spar", "University", "Shopping Centre", "Transport"].map(
-                    (place) => (
-                      <div
-                        key={place}
-                        className="flex items-center justify-between border-b pb-3 last:border-0"
-                      >
-                        <span className="text-sm font-medium">{place}</span>
-                        <span className="text-sm text-muted-foreground">
-                          Nearby
-                        </span>
-                      </div>
-                    )
-                  )}
+                  {nearbyPlaces.map((place) => (
+                    <div
+                      key={place}
+                      className="flex items-center justify-between border-b pb-3 last:border-0"
+                    >
+                      <span className="text-sm font-medium">{place}</span>
+                      <span className="text-sm text-muted-foreground">
+                        Nearby
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -230,8 +210,6 @@ export default function Property() {
           </aside>
         </div>
       </main>
-
-      <Footer2 />
     </div>
   )
 }
