@@ -15,7 +15,7 @@ import {
   createPropertySchema,
   updatePropertySchema,
 } from "@shared/schema/property.schema";
-import {GenderRestriction} from "@prisma/client"
+
 export const fetchAllProperties = asyncHandler(
   async (req: Request, res: Response) => {
     const properties = await getAllProperties();

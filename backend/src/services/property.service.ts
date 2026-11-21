@@ -4,7 +4,13 @@ import { handlePrismaError } from "../utils/handlePrismaError";
 import prisma from "../config/db";
 import { CreatePropertyInput,UpdatePropertyInput } from "@shared/schema/property.schema";
 import {GenderRestriction} from "@prisma/client"
+/*
+ TODO
+ Change property schema 
+ Change property type to accomodate new schema
+ Fix all services + controllers for property
 
+*/
 export const getAllProperties = async () => {
   try {
     return await prisma.property.findMany();
