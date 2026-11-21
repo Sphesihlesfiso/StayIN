@@ -4,6 +4,7 @@ import { handlePrismaError } from "../utils/handlePrismaError";
 import prisma from "../config/db";
 import { CreatePropertyInput,UpdatePropertyInput } from "@shared/schema/property.schema";
 import {GenderRestriction} from "@prisma/client"
+
 /*
  TODO
  Change property schema 
@@ -26,9 +27,22 @@ export const getPropertyById = async (id: number) => {
   return property;
 };
 
-export const addProperty = async (data: CreatePropertyInput) => {
+export const addProperty = async (data: CreatePropertyInput,userId: number) => {
   try {
-    return await prisma.property.create({ data});
+    const { amenities, availableFrom,rules, ...rest } = data;
+    return await prisma.property.create({ data:{...rest,availableFrom:new Date(availableFrom),
+      user:{
+        connect:
+        {id:userId},
+    amenities:{
+      connect: amenities.map((id) => ({ id })),
+
+    },
+    rules:{
+      connect: rules.map((id)=>({id}))
+    }
+  
+  }}});
   } catch (error) {
     throw handlePrismaError(error);
   }

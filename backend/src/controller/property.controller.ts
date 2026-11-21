@@ -40,7 +40,7 @@ export const uploadProperty = asyncHandler(
         .status(400)
         .json(validationError(parsed.error.issues));
     }
-    const newProperty = await addProperty(parsed.data);
+    const newProperty = await addProperty(parsed.data,1);
     res.status(201).json(successResponse(newProperty, "Property created"));
   },
 );
