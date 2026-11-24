@@ -9,7 +9,7 @@ import {
 } from "../services/property.service";
 import { asyncHandler } from "../utils/asyncHandler";
 import { successResponse, errorResponse, validationError } from "../utils/apiResponce";
-
+const userId=4;
 import {
   CreatePropertyInput,
   createPropertySchema,
@@ -40,7 +40,7 @@ export const uploadProperty = asyncHandler(
         .status(400)
         .json(validationError(parsed.error.issues));
     }
-    const newProperty = await addProperty(parsed.data,1);
+    const newProperty = await addProperty(parsed.data,userId);
     res.status(201).json(successResponse(newProperty, "Property created"));
   },
 );
@@ -62,6 +62,6 @@ export const updatePropertyById = asyncHandler(
       return res.status(400).json(validationError(parsed.error.issues))
     }
     const updatedProperty = await updateProperty(id, parsed.data);
-    res.status(200).json(successResponse(updatedProperty, "Property parsed"));
+    res.status(200).json(successResponse(updatedProperty, "Property updated."));
   },
 );

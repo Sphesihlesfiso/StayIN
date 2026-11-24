@@ -29,18 +29,11 @@ export const getPropertyById = async (id: number) => {
 
 export const addProperty = async (data: CreatePropertyInput,userId: number) => {
   try {
-    const { amenities, availableFrom,rules, ...rest } = data;
+    const { availableFrom, ...rest } = data;
     return await prisma.property.create({ data:{...rest,availableFrom:new Date(availableFrom),
       user:{
         connect:
-        {id:userId},
-    amenities:{
-      connect: amenities.map((id) => ({ id })),
-
-    },
-    rules:{
-      connect: rules.map((id)=>({id}))
-    }
+        {id:userId}
   
   }}});
   } catch (error) {

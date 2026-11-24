@@ -56,7 +56,7 @@ model Property {
   availableRooms    Int
   bathrooms         Int
   landlordId        Int
-  
+  bedrooms          Int
   province          String
   town              String
   suburb            String
