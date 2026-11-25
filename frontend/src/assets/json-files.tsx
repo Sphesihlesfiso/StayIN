@@ -1,3 +1,4 @@
+import { z } from "zod"
 export const items = [
   {
     image:
@@ -55,3 +56,19 @@ export const provinces = [
   "North West",
   "Western Cape",
 ]
+export const PROPERTY_TYPES = [
+  "Single_room",
+  "Sharing_room",
+  "Student_accommodation",
+  "Guesthouse",
+  "Flat",
+  "Apartment",
+  "House",
+  "Cottage",
+]
+export const propertyTypeSchema = z.preprocess(
+  (val) => (val === "" ? undefined : val),
+  z.enum(PROPERTY_TYPES, {
+    error: "Select a property type",
+  })
+)

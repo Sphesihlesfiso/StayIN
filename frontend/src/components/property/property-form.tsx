@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+// import { z } from "zod"
 
 import {
   Upload,
@@ -49,6 +49,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { provinces, ruleOptions, amenityOptions } from "../../assets/json-files"
+import { type PropertyFormValues } from "../../types/property/property"
+import {
+  createPropertySchema,
+  PROPERTY_TYPES,
+  GENDER_TYPES,
+} from "../../../../shared/schema/property.schema"
 // -----------------------------
 // VALIDATION
 // -----------------------------
@@ -56,44 +62,42 @@ import { provinces, ruleOptions, amenityOptions } from "../../assets/json-files"
 const MAX_IMAGES = 10
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
 
-const propertySchema = z.object({
-  title: z.string().min(5, "Title must contain at least 5 characters"),
-  description: z
-    .string()
-    .min(30, "Description must contain at least 30 characters"),
+// const propertySchema = z.object({
+//   title: z.string().min(5, "Title must contain at least 5 characters"),
+//   description: z
+//     .string()
+//     .min(30, "Description must contain at least 30 characters"),
 
-  propertyType: z.string().min(1, "Select a property type"),
+//   propertyType: z.string().min(1, "Select a property type"),
 
-  province: z.string().min(1, "Select a province"),
-  city: z.string().min(1, "Enter a city"),
-  suburb: z.string().min(1, "Enter a suburb"),
-  address: z.string().min(1, "Enter the property address"),
+//   province: z.string().min(1, "Select a province"),
+//   city: z.string().min(1, "Enter a city"),
+//   suburb: z.string().min(1, "Enter a suburb"),
+//   address: z.string().min(1, "Enter the property address"),
 
-  bedrooms: z.coerce.number().min(1, "At least 1 bedroom is required"),
-  bathrooms: z.coerce.number().min(1, "At least 1 bathroom is required"),
-  availableRooms: z.coerce
-    .number()
-    .min(1, "At least 1 available room is required"),
+//   bedrooms: z.coerce.number().min(1, "At least 1 bedroom is required"),
+//   bathrooms: z.coerce.number().min(1, "At least 1 bathroom is required"),
+//   availableRooms: z.coerce
+//     .number()
+//     .min(1, "At least 1 available room is required"),
 
-  monthlyRent: z.coerce.number().positive("Enter a valid rental amount"),
-  deposit: z.coerce.number().min(0, "Deposit cannot be negative"),
+//   monthlyRent: z.coerce.number().positive("Enter a valid rental amount"),
+//   deposit: z.coerce.number().min(0, "Deposit cannot be negative"),
 
-  utilitiesIncluded: z.boolean(),
+//   utilitiesIncluded: z.boolean(),
 
-  genderPreference: z.string().min(1, "Select a preference"),
-  studentFriendly: z.boolean(),
-  nsfasAccepted: z.boolean(),
+//   genderPreference: z.string().min(1, "Select a preference"),
+//   studentFriendly: z.boolean(),
+//   nsfasAccepted: z.boolean(),
 
-  amenities: z.array(z.string()),
-  rules: z.array(z.string()),
+//   amenities: z.array(z.string()),
+//   rules: z.array(z.string()),
 
-  parking: z.boolean(),
-  furnished: z.boolean(),
+//   parking: z.boolean(),
+//   furnished: z.boolean(),
 
-  availableFrom: z.string().min(1, "Select an availability date"),
-})
-
-export type PropertyFormValues = z.infer<typeof propertySchema>
+//   availableFrom: z.string().min(1, "Select an availability date"),
+// })
 
 interface PropertyFormProps {
   initialData?: Partial<PropertyFormValues>
@@ -113,9 +117,9 @@ interface PropertyFormProps {
 const defaultFormValues: PropertyFormValues = {
   title: "",
   description: "",
-  propertyType: "",
+  propertyType: undefined as unknown as PropertyFormValues["propertyType"],
   province: "",
-  city: "",
+  town: "",
   suburb: "",
   address: "",
   bedrooms: 1,
@@ -124,7 +128,7 @@ const defaultFormValues: PropertyFormValues = {
   monthlyRent: 0,
   deposit: 0,
   utilitiesIncluded: false,
-  genderPreference: "any",
+  genderPreference: "Mixed", // must match an entry in GENDER_TYPES
   studentFriendly: true,
   nsfasAccepted: false,
   amenities: [],
@@ -145,7 +149,7 @@ export default function PropertyForm({
   onSave,
 }: PropertyFormProps) {
   const form = useForm<PropertyFormValues>({
-    resolver: zodResolver(propertySchema) as never,
+    resolver: zodResolver(createPropertySchema) as never,
     defaultValues: {
       ...defaultFormValues,
       ...initialData,
@@ -318,15 +322,11 @@ export default function PropertyForm({
                       </SelectTrigger>
 
                       <SelectContent>
-                        <SelectItem value="HOUSE">House</SelectItem>
-                        <SelectItem value="APARTMENT">Apartment</SelectItem>
-                        <SelectItem value="FLAT">Flat</SelectItem>
-                        <SelectItem value="STUDENT_ACCOMMODATION">
-                          Student accommodation
-                        </SelectItem>
-                        <SelectItem value="GUESTHOUSE">Guesthouse</SelectItem>
-                        <SelectItem value="ROOM">Single room</SelectItem>
-                        <SelectItem value="COTTAGE">Cottage</SelectItem>
+                        {PROPERTY_TYPES.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type.replaceAll("_", " ")}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
 
@@ -597,9 +597,11 @@ export default function PropertyForm({
                     </SelectTrigger>
 
                     <SelectContent>
-                      <SelectItem value="any">Any</SelectItem>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
+                      {GENDER_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type.replaceAll("_", " ")}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
 
@@ -663,29 +665,42 @@ export default function PropertyForm({
 
           <CardContent>
             <FieldGroup className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {amenityOptions.map((amenity) => (
-                <Controller
-                  key={amenity}
-                  control={form.control}
-                  name="amenities"
-                  render={({ field }) => (
-                    <Field orientation="horizontal" className="gap-2">
-                      <Checkbox
-                        checked={field.value.includes(amenity)}
-                        onCheckedChange={(checked) => {
-                          field.onChange(
-                            checked
-                              ? [...field.value, amenity]
-                              : field.value.filter((value) => value !== amenity)
-                          )
-                        }}
-                      />
+              {amenityOptions.map((amenity) => {
+                const id = `amenity-${amenity}`
 
-                      <FieldLabel className="font-normal">{amenity}</FieldLabel>
-                    </Field>
-                  )}
-                />
-              ))}
+                return (
+                  <Controller
+                    key={amenity}
+                    control={form.control}
+                    name="amenities"
+                    render={({ field }) => {
+                      const selected = field.value ?? []
+
+                      return (
+                        <Field orientation="horizontal" className="gap-2">
+                          <Checkbox
+                            id={id}
+                            checked={selected.includes(amenity)}
+                            onCheckedChange={(checked) => {
+                              const isChecked = checked === true
+                              field.onChange(
+                                isChecked
+                                  ? [...selected, amenity]
+                                  : selected.filter(
+                                      (value) => value !== amenity
+                                    )
+                              )
+                            }}
+                          />
+                          <FieldLabel htmlFor={id} className="font-normal">
+                            {amenity}
+                          </FieldLabel>
+                        </Field>
+                      )
+                    }}
+                  />
+                )
+              })}
             </FieldGroup>
           </CardContent>
         </Card>
@@ -706,29 +721,41 @@ export default function PropertyForm({
 
           <CardContent>
             <FieldGroup className="grid grid-cols-2 gap-4">
-              {ruleOptions.map((rule) => (
-                <Controller
-                  key={rule}
-                  control={form.control}
-                  name="rules"
-                  render={({ field }) => (
-                    <Field orientation="horizontal" className="gap-2">
-                      <Checkbox
-                        checked={field.value.includes(rule)}
-                        onCheckedChange={(checked) => {
-                          field.onChange(
-                            checked
-                              ? [...field.value, rule]
-                              : field.value.filter((value) => value !== rule)
-                          )
-                        }}
-                      />
+              {ruleOptions.map((rule) => {
+                const id = `rule-${rule}`
 
-                      <FieldLabel className="font-normal">{rule}</FieldLabel>
-                    </Field>
-                  )}
-                />
-              ))}
+                return (
+                  <Controller
+                    key={rule}
+                    control={form.control}
+                    name="rules"
+                    render={({ field }) => {
+                      const selected = field.value ?? []
+
+                      return (
+                        <Field orientation="horizontal" className="gap-2">
+                          <Checkbox
+                            id={id}
+                            checked={selected.includes(rule)}
+                            onCheckedChange={(checked) => {
+                              const isChecked = checked === true
+                              field.onChange(
+                                isChecked
+                                  ? [...selected, rule]
+                                  : selected.filter((value) => value !== rule)
+                              )
+                            }}
+                          />
+
+                          <FieldLabel htmlFor={id} className="font-normal">
+                            {rule}
+                          </FieldLabel>
+                        </Field>
+                      )
+                    }}
+                  />
+                )
+              })}
             </FieldGroup>
           </CardContent>
         </Card>

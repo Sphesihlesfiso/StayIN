@@ -1,4 +1,6 @@
+import { z } from "zod"
 import { Badge } from "@/components/ui/badge"
+import { createPropertySchema } from "../../../../shared/schema/property.schema"
 
 import {
   Card,
@@ -8,34 +10,64 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-export function CardImage() {
+type PropertyInput = z.infer<typeof createPropertySchema>
+
+interface CardImageProps {
+  input: PropertyInput
+}
+
+export function CardImage({ input }: CardImageProps) {
   return (
-    <Card className="">
-      <div className="absolute inset-0 z-30 aspect-video" />
-      <img
-        src="https://avatar.vercel.sh/shadcn1"
-        alt="Event cover"
-        className="relative z-0 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
-      />
+    <Card className="relative overflow-hidden pt-0">
+      <div className="relative aspect-video w-full">
+        <img
+          src="https://avatar.vercel.sh/shadcn1"
+          alt={input.title}
+          className="h-full w-full object-cover brightness-75"
+        />
+      </div>
+
       <CardHeader>
-        <CardAction className="flex flex-wrap gap-0.5"></CardAction>
-        <CardTitle>R 3500 pm</CardTitle>
+        <CardAction className="flex flex-wrap gap-0.5" />
+
+        <CardTitle>R {input.monthlyRent} pm</CardTitle>
+
         <CardDescription>
-          <p className="m-0.5">4 Bedroom house in Idas Valei.</p>
-          <Badge variant="outline" className="mr-0.5 p-0.5">
-            Nsfas Accredited
-          </Badge>
-          <Badge variant="outline" className="mr-0.5 p-0.5">
-            Cctv
-          </Badge>
-          <Badge variant="outline" className="mr-0.5 p-0.5">
-            Shuttle
-          </Badge>
+          <div>
+            <p className="mb-2 font-medium">{input.title}</p>
+
+            <p className="mb-2">
+              {input.suburb}, {input.town}
+            </p>
+
+            <p className="mb-2">{input.propertyType.replaceAll("_", " ")}</p>
+
+            <div className="flex flex-wrap gap-1">
+              {input.nsfasAccredited && (
+                <Badge variant="outline">NSFAS Accredited</Badge>
+              )}
+
+              {input.studentFriendly && (
+                <Badge variant="outline">Student Friendly</Badge>
+              )}
+
+              {input.furnished && <Badge variant="outline">Furnished</Badge>}
+
+              {input.parking && <Badge variant="outline">Parking</Badge>}
+
+              {input.utilitiesIncluded && (
+                <Badge variant="outline">Utilities Included</Badge>
+              )}
+            </div>
+
+            <div className="mt-3 flex gap-3 text-sm">
+              <span>{input.bedrooms} Bedrooms</span>
+              <span>{input.bathrooms} Bathrooms</span>
+              <span>{input.availableRooms} Available Rooms</span>
+            </div>
+          </div>
         </CardDescription>
       </CardHeader>
-      {/* <CardFooter>
-        <Button className="md">View Event</Button>
-      </CardFooter> */}
     </Card>
   )
 }

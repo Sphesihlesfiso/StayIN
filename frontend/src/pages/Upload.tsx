@@ -1,8 +1,7 @@
 "use client"
 
-import PropertyForm, {
-  type PropertyFormValues,
-} from "@/components/property/property-form"
+import PropertyForm from "@/components/property/property-form"
+import { type PropertyFormValues } from "../types/property/property"
 
 export default function Upload() {
   async function handleCreate(

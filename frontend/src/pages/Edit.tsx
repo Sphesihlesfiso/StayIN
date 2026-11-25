@@ -2,15 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router"
-import PropertyForm, {
-  type PropertyFormValues,
-} from "@/components/property/property-form"
+import PropertyForm from "@/components/property/property-form"
+import { type PropertyFormValues } from "../types/property/property"
 
 interface PropertyImageItem {
   url: string
 }
 
-export interface EditableProperty extends Partial<PropertyFormValues> {
+export type EditableProperty = Partial<PropertyFormValues> & {
   id: string
   images?: PropertyImageItem[] | null
 }
@@ -47,12 +46,12 @@ export default function EditProperty() {
         await new Promise((resolve) => setTimeout(resolve, 300))
 
         const mockProperty: EditableProperty = {
-          id,
+          id: "1",
           title: "Sunny Studio near Campus",
           description: "Bright room with desk and fast Wi-Fi.",
           propertyType: "Apartment",
           province: "Western Cape",
-          city: "Cape Town",
+          town: "Cape Town",
           suburb: "Rondebosch",
           address: "12 Main Road",
           bedrooms: 2,
@@ -61,7 +60,7 @@ export default function EditProperty() {
           monthlyRent: 6500,
           deposit: 6500,
           utilitiesIncluded: true,
-          genderPreference: "any",
+          genderPreference: "Mixed",
           studentFriendly: true,
           nsfasAccepted: true,
           amenities: ["Wi-Fi", "Study Desk"],
@@ -100,9 +99,9 @@ export default function EditProperty() {
     return {
       title: property.title ?? "",
       description: property.description ?? "",
-      propertyType: property.propertyType ?? "",
+      propertyType: property.propertyType ?? undefined,
       province: property.province ?? "",
-      city: property.city ?? "",
+      town: property.town ?? "",
       suburb: property.suburb ?? "",
       address: property.address ?? "",
       bedrooms: property.bedrooms ?? 1,
@@ -111,7 +110,7 @@ export default function EditProperty() {
       monthlyRent: property.monthlyRent ?? 0,
       deposit: property.deposit ?? 0,
       utilitiesIncluded: property.utilitiesIncluded ?? false,
-      genderPreference: property.genderPreference ?? "any",
+      genderPreference: property.genderPreference ?? "Mixed",
       studentFriendly: property.studentFriendly ?? true,
       nsfasAccepted: property.nsfasAccepted ?? false,
       amenities: property.amenities ?? [],

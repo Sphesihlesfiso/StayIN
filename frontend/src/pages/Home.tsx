@@ -1,24 +1,53 @@
 import { CardImage } from "../components/property/property-card"
 import { PropertyPaging } from "../components/paging"
+import { api } from "@/lib/axios_instance"
+import { useEffect, useState } from "react"
+import { z } from "zod"
+import { createPropertySchema } from "../../../shared/schema/property.schema"
+
+type PropertyInput = z.infer<typeof createPropertySchema>
 
 export const iframeHeight = "800px"
 export const description = "A responsive property listing page."
-// function handleApplyFilters(filters: PropertyFilters) {
-//   console.log("Applied filters:", filters)
 
-//   // Later: connect this to your TanStack Query property search.
-// }
 export default function Home() {
+  const [loading, setLoading] = useState(true)
+  const [properties, setProperties] = useState<PropertyInput[]>([])
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        setLoading(true)
+
+        const res = await api.get("/properties")
+
+        setProperties(res.data.data)
+      } catch (error) {
+        console.log("Error fetching properties", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAll()
+  }, [])
+
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex flex-1 flex-col gap-6 p-4 md:p-6">
         <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          <CardImage />
-          <CardImage />
-          <CardImage />
-          <CardImage />
-          <CardImage />
-          <CardImage />
+          {loading ? (
+            <p>Loading properties...</p>
+          ) : properties.length > 0 ? (
+            properties.map((property, index) => (
+              <CardImage
+                key={`${property.title}-${property.address}-${index}`}
+                input={property}
+              />
+            ))
+          ) : (
+            <p>No properties found.</p>
+          )}
         </section>
 
         <div className="mt-auto flex justify-center py-6">
