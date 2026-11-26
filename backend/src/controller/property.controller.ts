@@ -15,7 +15,7 @@ import {
   createPropertySchema,
   updatePropertySchema,
 } from "@shared/schema/property.schema";
-
+import multer from "multer"
 export const fetchAllProperties = asyncHandler(
   async (req: Request, res: Response) => {
     const properties = await getAllProperties();
@@ -33,18 +33,35 @@ export const getUniqueProperty = asyncHandler(
 
 export const uploadProperty = asyncHandler(
   async (req: Request, res: Response) => {
-    const parsed = createPropertySchema.safeParse(req.body);
+    // 1. The client sends the fields as a JSON string under "data"
+   
+    let raw: unknown
+    try {
+      raw = JSON.parse(req.body?.data)
 
-    if (!parsed.success) {
-      return res
-        .status(400)
-        .json(validationError(parsed.error.issues));
+    } catch {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or missing JSON in 'data' field",
+      })
     }
-    const newProperty = await addProperty(parsed.data,userId);
-    res.status(201).json(successResponse(newProperty, "Property created"));
-  },
-);
 
+    // 2. Validate the parsed object
+    const parsed = createPropertySchema.safeParse(raw)
+    if (!parsed.success) {
+      return res.status(400).json(validationError(parsed.error.issues))
+    }
+
+    // 3. Images (empty array if none were selected)
+    const files = (req.files as Express.Multer.File[]) ?? []
+
+    // 4. userId must come from your auth middleware
+    const userId = 4 // adjust to however your auth attaches the user
+
+    const newProperty = await addProperty(parsed.data, userId, files)
+    res.status(201).json(successResponse(newProperty, "Property created"))
+  }
+)
 export const deleteProperty = asyncHandler(
   async (req: Request, res: Response) => {
     const id = Number(req.params.id);

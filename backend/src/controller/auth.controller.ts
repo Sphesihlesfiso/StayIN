@@ -1,29 +1,38 @@
-import { signIn, signUp } from "../services/auth.service";
-import { asyncHandler } from "../utils/asyncHandler";
-import { Request, Response } from "express";
+// import { signIn, signUp } from "../services/auth.service";
+// import { asyncHandler } from "../utils/asyncHandler";
+// import { Request, Response } from "express";
 
-import { successResponse, validationError } from "../utils/apiResponce";
-import { createUserSchema } from '@shared/schema/user.schema';
-import { loginUserSchema } from '@shared/schema/auth.schema';
+// import { successResponse, validationError } from "../utils/apiResponce";
+// import { createUserSchema } from '@shared/schema/user.schema';
+// import { loginUserSchema } from '@shared/schema/auth.schema';
+// import session from "express-session"
+// import passport from "passport"
+// import { app } from '../index';
+// app.use(session({
+//   secret:process.env.SESSION_SECRET ||"",
+//   resave:false,
+//   saveUninitialized:true
 
+// }))
+// app.use(passport.initialize())
+// app.use(passport.session())
 
-export const registerUser = asyncHandler(
-  async (req: Request, res: Response) => {
-    const parsed = createUserSchema.safeParse(req.body);
+// export const registerUser = asyncHandler(
+//   async (req: Request, res: Response) => {
+//     const parsed = createUserSchema.safeParse(req.body);
+//     if (!parsed.success) {
+//       return res.status(400).json(validationError(parsed.error.issues));
+//     }
+//     await signUp(parsed.data);
+//     res.status(201).json(successResponse(null));
+//   },
+// );
+// export const loginUser = asyncHandler(async (req: Request, res: Response) => {
+//   const parsed = loginUserSchema.safeParse(req.body);
+//   if (!parsed.success) {
+//     return res.status(400).json(validationError(parsed.error.issues));
+//   }
 
-    if (!parsed.success) {
-      return res.status(400).json(validationError(parsed.error.issues));
-    }
-    await signUp(parsed.data);
-    res.status(201).json(successResponse(null));
-  },
-);
-export const loginUser = asyncHandler(async (req: Request, res: Response) => {
-  const parsed = loginUserSchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json(validationError(parsed.error.issues));
-  }
-
-  await signIn(parsed.data);
-  res.json(successResponse(null, "Loged-in user."));
-});
+//   await signIn(parsed.data);
+//   res.json(successResponse(null, "Loged-in user."));
+// });

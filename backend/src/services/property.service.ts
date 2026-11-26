@@ -27,7 +27,7 @@ export const getPropertyById = async (id: number) => {
   return property;
 };
 
-export const addProperty = async (data: CreatePropertyInput,userId: number) => {
+export const addProperty = async (data: CreatePropertyInput,userId: number,file:Express.Multer.File[]) => {
   try {
     const { availableFrom, ...rest } = data;
     return await prisma.property.create({ data:{...rest,availableFrom:new Date(availableFrom),

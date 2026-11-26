@@ -77,7 +77,7 @@ model User {
   password String
   role     Role       @default(TENANT)
   //Comment  Comment[]
-  PropertIES Property[]
+  Properties Property[]
 }
 
 enum GenderRestriction {
