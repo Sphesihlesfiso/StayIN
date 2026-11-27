@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10",
+    "@prisma/prisma7": "^7.10.1",
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -54,5 +55,9 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8",
     "vite": "^8"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.10.1": true,
+    "prisma@7.10.1": true
   }
 }

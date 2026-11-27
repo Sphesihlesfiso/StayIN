@@ -8,6 +8,7 @@ import EditProperty from "./pages/Edit"
 import Upload from "./pages/Upload"
 import LoginPage from "./pages/Sign-in"
 import SignupPage from "./pages/Sign-up"
+import ManangeProperty from "./pages/Manange"
 
 export function App() {
   return (
@@ -19,9 +20,10 @@ export function App() {
           <Route path="/sign-up" element={<SignupPage />} />
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/properties" element={<Property />} />
+            <Route path="/properties/:id" element={<Property />} />
             <Route path="/properties/:id/edit" element={<EditProperty />} />
             <Route path="/upload" element={<Upload />} />
+            <Route path="/manange/:landlordId" element={<ManangeProperty />} />
           </Route>
         </Routes>
       </BrowserRouter>

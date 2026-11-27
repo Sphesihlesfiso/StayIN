@@ -1,4 +1,4 @@
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -10,26 +10,73 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"form">) {
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { loginSchema } from "../../../../shared/schema/user.schema"
+
+// 1. Zod schema
+
+// Infer TypeScript type from the schema
+export type LoginFormValues = z.infer<typeof loginSchema>
+
+interface LoginFormProps extends Omit<
+  React.ComponentProps<"form">,
+  "onSubmit"
+> {
+  onSubmit: (data: LoginFormValues) => void | Promise<void>
+}
+
+export function LoginForm({ className, onSubmit, ...props }: LoginFormProps) {
+  // 2. React Hook Form
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      onSubmit={form.handleSubmit(onSubmit)}
+      {...props}
+    >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
+
           <p className="text-sm text-balance text-muted-foreground">
             Enter your email below to login to your account
           </p>
         </div>
+
+        {/* Email */}
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            {...form.register("email")}
+            aria-invalid={!!form.formState.errors.email}
+          />
+
+          {form.formState.errors.email && (
+            <FieldDescription className="text-destructive">
+              {form.formState.errors.email.message}
+            </FieldDescription>
+          )}
         </Field>
+
+        {/* Password */}
         <Field>
           <div className="flex items-center">
             <FieldLabel htmlFor="password">Password</FieldLabel>
+
             <a
               href="#"
               className="ml-auto text-sm underline-offset-4 hover:underline"
@@ -37,12 +84,31 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+
+          <Input
+            id="password"
+            type="password"
+            {...form.register("password")}
+            aria-invalid={!!form.formState.errors.password}
+          />
+
+          {form.formState.errors.password && (
+            <FieldDescription className="text-destructive">
+              {form.formState.errors.password.message}
+            </FieldDescription>
+          )}
         </Field>
+
+        {/* Submit */}
         <Field>
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? "Logging in..." : "Login"}
+          </Button>
         </Field>
+
         <FieldSeparator>Or continue with</FieldSeparator>
+
+        {/* GitHub */}
         <Field>
           <Button variant="outline" type="button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -53,6 +119,7 @@ export function LoginForm({
             </svg>
             Login with GitHub
           </Button>
+
           <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}
             <a href="#" className="underline underline-offset-4">

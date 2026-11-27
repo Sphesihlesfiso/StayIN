@@ -10,9 +10,47 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { BsWhatsapp } from "react-icons/bs"
-import { amenities, items, nearbyPlaces } from "../assets/json-files"
-
+import { items, nearbyPlaces } from "../assets/json-files"
+import { useState, useEffect } from "react"
+import { createPropertySchema } from "../../../shared/schema/property.schema"
+import type { z } from "zod"
+import { api } from "@/lib/axios_instance"
+import { useParams } from "react-router"
+type propertyInput = z.infer<typeof createPropertySchema>
 export default function Property() {
+  const [loading, setLoading] = useState(false)
+  const [property, setProperty] = useState<propertyInput>(null)
+  const { id } = useParams()
+
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        setLoading(true)
+        const res = await api.get(`properties/${id}`)
+        setProperty(res.data.data)
+      } catch (error) {
+        console.error("Failed to fetch property ", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProperty()
+  }, [id])
+  if (loading) {
+    return <div className="p-8">Loading property...</div>
+  }
+
+  if (!property) {
+    return <div className="p-8">Property not found.</div>
+  }
+  const formatPropertyType = (type: string) => type.replaceAll("_", " ")
+
+  const formatDate = (date: string) =>
+    new Date(date).toLocaleDateString("en-ZA", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -46,19 +84,99 @@ export default function Property() {
               {/* Property heading */}
               <div className="mt-6 space-y-3">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="secondary">House</Badge>
-                  <Badge variant="outline">Available</Badge>
+                  <Badge variant="secondary">
+                    {formatPropertyType(property.propertyType)}
+                  </Badge>
+
+                  <Badge variant="outline">
+                    Available from {formatDate(property.availableFrom)}
+                  </Badge>
+
+                  {property.nsfasAccredited && (
+                    <Badge variant="outline">NSFAS Accredited</Badge>
+                  )}
+
+                  {property.studentFriendly && (
+                    <Badge variant="outline">Student Friendly</Badge>
+                  )}
                 </div>
 
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                  2 Bedroom House in Idas Valley
+                  {property.title}
                 </h1>
 
                 <p className="text-sm text-muted-foreground">
-                  Idas Valley, Stellenbosch, Western Cape
+                  {property.address}, {property.suburb}, {property.town},{" "}
+                  {property.province}
                 </p>
               </div>
             </section>
+
+            {/* Property details */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Property details</CardTitle>
+                <CardDescription>
+                  Information about this accommodation.
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  <div className="rounded-lg border p-4">
+                    <p className="text-sm text-muted-foreground">Bedrooms</p>
+                    <p className="text-lg font-semibold">{property.bedrooms}</p>
+                  </div>
+
+                  <div className="rounded-lg border p-4">
+                    <p className="text-sm text-muted-foreground">Bathrooms</p>
+                    <p className="text-lg font-semibold">
+                      {property.bathrooms}
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg border p-4">
+                    <p className="text-sm text-muted-foreground">
+                      Available rooms
+                    </p>
+                    <p className="text-lg font-semibold">
+                      {property.availableRooms}
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg border p-4">
+                    <p className="text-sm text-muted-foreground">Furnished</p>
+                    <p className="text-lg font-semibold">
+                      {property.furnished ? "Yes" : "No"}
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg border p-4">
+                    <p className="text-sm text-muted-foreground">Parking</p>
+                    <p className="text-lg font-semibold">
+                      {property.parking ? "Available" : "Unavailable"}
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg border p-4">
+                    <p className="text-sm text-muted-foreground">Utilities</p>
+                    <p className="text-lg font-semibold">
+                      {property.utilitiesIncluded ? "Included" : "Excluded"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <p className="mb-2 text-sm text-muted-foreground">
+                    Gender preference
+                  </p>
+
+                  <Badge variant="outline">
+                    {property.genderPreferences.replaceAll("_", " ")}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* About */}
             <Card>
@@ -70,11 +188,8 @@ export default function Property() {
               </CardHeader>
 
               <CardContent>
-                <p className="text-sm leading-7 text-muted-foreground">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Natus deleniti quisquam magni facere animi id adipisci
-                  assumenda! Et placeat deserunt qui quae tempore eos commodi,
-                  nihil accusamus! Laboriosam, nulla aperiam.
+                <p className="text-sm leading-7 whitespace-pre-wrap text-muted-foreground">
+                  {property.description}
                 </p>
               </CardContent>
             </Card>
@@ -89,11 +204,19 @@ export default function Property() {
               </CardHeader>
 
               <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline">No noise</Badge>
-                  <Badge variant="outline">No smoking</Badge>
-                  <Badge variant="outline">No parties</Badge>
-                </div>
+                {property.rules.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {property.rules.map((rule: string, index: string) => (
+                      <Badge key={index} variant="outline">
+                        {rule}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    No house rules specified.
+                  </p>
+                )}
               </CardContent>
             </Card>
 
@@ -107,16 +230,24 @@ export default function Property() {
               </CardHeader>
 
               <CardContent>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                  {amenities.map((amenity) => (
-                    <div
-                      key={amenity}
-                      className="rounded-lg border p-4 text-sm font-medium"
-                    >
-                      {amenity}
-                    </div>
-                  ))}
-                </div>
+                {property.amenities.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                    {property.amenities.map(
+                      (amenity: string, index: string) => (
+                        <div
+                          key={index}
+                          className="rounded-lg border p-4 text-sm font-medium"
+                        >
+                          {amenity}
+                        </div>
+                      )
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    No amenities specified.
+                  </p>
+                )}
               </CardContent>
             </Card>
 
@@ -137,6 +268,7 @@ export default function Property() {
                       className="flex items-center justify-between border-b pb-3 last:border-0"
                     >
                       <span className="text-sm font-medium">{place}</span>
+
                       <span className="text-sm text-muted-foreground">
                         Nearby
                       </span>
@@ -147,7 +279,7 @@ export default function Property() {
             </Card>
           </div>
 
-          {/* RIGHT COLUMN: STICKY PRICING */}
+          {/* RIGHT COLUMN: PRICING */}
           <aside className="relative lg:sticky lg:top-24">
             <Card className="shadow-sm">
               <CardHeader>
@@ -162,24 +294,38 @@ export default function Property() {
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Monthly rent</span>
-                    <span className="font-semibold">Not specified</span>
+
+                    <span className="font-semibold">
+                      R {property.monthlyRent.toLocaleString("en-ZA")}
+                    </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Deposit</span>
-                    <span className="font-semibold">Not specified</span>
+
+                    <span className="font-semibold">
+                      R {property.deposit.toLocaleString("en-ZA")}
+                    </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Utilities</span>
-                    <span className="font-semibold">Not specified</span>
+
+                    <span className="font-semibold">
+                      {property.utilitiesIncluded
+                        ? "Included in rent"
+                        : "Not included"}
+                    </span>
                   </div>
                 </div>
 
                 <div className="border-t pt-4">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold">Total monthly cost</span>
-                    <span className="text-lg font-bold">Contact host</span>
+                    <span className="font-semibold">Monthly rent</span>
+
+                    <span className="text-lg font-bold">
+                      R {property.monthlyRent.toLocaleString("en-ZA")}
+                    </span>
                   </div>
                 </div>
 
@@ -188,6 +334,7 @@ export default function Property() {
                   <p className="text-sm font-medium">
                     Interested in this property?
                   </p>
+
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
                     Send a request to the landlord to arrange a viewing and find
                     out more about the accommodation.

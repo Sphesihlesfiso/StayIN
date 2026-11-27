@@ -39,11 +39,8 @@ export default function Home() {
           {loading ? (
             <p>Loading properties...</p>
           ) : properties.length > 0 ? (
-            properties.map((property, index) => (
-              <CardImage
-                key={`${property.title}-${property.address}-${index}`}
-                input={property}
-              />
+            properties.map((property) => (
+              <CardImage key={property.id} input={property} />
             ))
           ) : (
             <p>No properties found.</p>

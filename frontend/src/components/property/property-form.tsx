@@ -59,50 +59,14 @@ import {
 // VALIDATION
 // -----------------------------
 
-const MAX_IMAGES = 10
+const MAX_IMAGES = 5
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
-
-// const propertySchema = z.object({
-//   title: z.string().min(5, "Title must contain at least 5 characters"),
-//   description: z
-//     .string()
-//     .min(30, "Description must contain at least 30 characters"),
-
-//   propertyType: z.string().min(1, "Select a property type"),
-
-//   province: z.string().min(1, "Select a province"),
-//   city: z.string().min(1, "Enter a city"),
-//   suburb: z.string().min(1, "Enter a suburb"),
-//   address: z.string().min(1, "Enter the property address"),
-
-//   bedrooms: z.coerce.number().min(1, "At least 1 bedroom is required"),
-//   bathrooms: z.coerce.number().min(1, "At least 1 bathroom is required"),
-//   availableRooms: z.coerce
-//     .number()
-//     .min(1, "At least 1 available room is required"),
-
-//   monthlyRent: z.coerce.number().positive("Enter a valid rental amount"),
-//   deposit: z.coerce.number().min(0, "Deposit cannot be negative"),
-
-//   utilitiesIncluded: z.boolean(),
-
-//   genderPreference: z.string().min(1, "Select a preference"),
-//   studentFriendly: z.boolean(),
-//   nsfasAccepted: z.boolean(),
-
-//   amenities: z.array(z.string()),
-//   rules: z.array(z.string()),
-
-//   parking: z.boolean(),
-//   furnished: z.boolean(),
-
-//   availableFrom: z.string().min(1, "Select an availability date"),
-// })
 
 interface PropertyFormProps {
   initialData?: Partial<PropertyFormValues>
   existingImages?: string[]
   mode: "create" | "edit"
+  // saving: boolean
   onSave: (
     data: PropertyFormValues,
     images: File[],
@@ -128,9 +92,9 @@ const defaultFormValues: PropertyFormValues = {
   monthlyRent: 0,
   deposit: 0,
   utilitiesIncluded: false,
-  genderPreference: "Mixed", // must match an entry in GENDER_TYPES
+  genderPreferences: "Mixed", // must match an entry in GENDER_TYPES
   studentFriendly: true,
-  nsfasAccepted: false,
+  nsfasAccredited: false,
   amenities: [],
   rules: [],
   parking: false,
@@ -146,6 +110,7 @@ export default function PropertyForm({
   initialData,
   existingImages = [],
   mode,
+
   onSave,
 }: PropertyFormProps) {
   const form = useForm<PropertyFormValues>({
@@ -161,7 +126,6 @@ export default function PropertyForm({
   const [removedImages, setRemovedImages] = useState<string[]>([])
 
   const previewsRef = useRef<string[]>([])
-  previewsRef.current = imagePreviews
 
   useEffect(() => {
     if (initialData) {
@@ -203,7 +167,9 @@ export default function PropertyForm({
 
     event.target.value = ""
   }
-
+  useEffect(() => {
+    previewsRef.current = imagePreviews
+  }, [imagePreviews])
   function removeNewImage(index: number) {
     const targetPreview = imagePreviews[index]
     if (targetPreview) {
@@ -232,7 +198,9 @@ export default function PropertyForm({
   async function handleSubmit(data: PropertyFormValues) {
     await onSave(data, images, removedImages)
   }
-
+  console.log({
+    isSubmitting: form.formState.isSubmitting,
+  })
   return (
     <div className="mx-auto max-w-5xl space-y-8 py-8">
       {/* HEADER */}
@@ -251,7 +219,12 @@ export default function PropertyForm({
         </p>
       </div>
 
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+      <form
+        className="space-y-8"
+        onSubmit={form.handleSubmit(handleSubmit, (errors) =>
+          console.error("Validation errors:", errors)
+        )}
+      >
         {/* BASIC INFORMATION */}
 
         <Card>
@@ -380,7 +353,7 @@ export default function PropertyForm({
 
               {(
                 [
-                  ["city", "City / Town", "e.g. Stellenbosch"],
+                  ["town", "Town", "e.g. Stellenbosch"],
                   ["suburb", "Suburb", "e.g. Idas Valley"],
                   ["address", "Street address", "Street and house number"],
                 ] as const
@@ -586,7 +559,7 @@ export default function PropertyForm({
           <CardContent className="space-y-5">
             <Controller
               control={form.control}
-              name="genderPreference"
+              name="genderPreferences"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Gender preference</FieldLabel>
@@ -618,7 +591,7 @@ export default function PropertyForm({
                   "Is this accommodation suitable for students?",
                 ],
                 [
-                  "nsfasAccepted",
+                  "nsfasAccredited",
                   "NSFAS accommodation",
                   "Is this property approved for NSFAS-funded students?",
                 ],
@@ -687,7 +660,7 @@ export default function PropertyForm({
                                 isChecked
                                   ? [...selected, amenity]
                                   : selected.filter(
-                                      (value) => value !== amenity
+                                      (value: string) => value !== amenity
                                     )
                               )
                             }}
@@ -742,7 +715,9 @@ export default function PropertyForm({
                               field.onChange(
                                 isChecked
                                   ? [...selected, rule]
-                                  : selected.filter((value) => value !== rule)
+                                  : selected.filter(
+                                      (value: string) => value !== rule
+                                    )
                               )
                             }}
                           />
@@ -892,7 +867,7 @@ export default function PropertyForm({
           <Button type="button" variant="outline" onClick={handleResetForm}>
             Reset form
           </Button>
-
+          {form.formState.isSubmitting}
           <Button
             type="submit"
             size="lg"

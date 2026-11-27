@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router"
 import PropertyForm from "@/components/property/property-form"
 import { type PropertyFormValues } from "../types/property/property"
+import { api } from "../lib/axios_instance"
 
 interface PropertyImageItem {
   url: string
@@ -27,70 +28,30 @@ export default function EditProperty() {
   const { id } = useParams<{ id: string }>()
   const [property, setProperty] = useState<EditableProperty | null>(null)
   const [loading, setLoading] = useState(true)
+  // const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!id) {
-      setError("Missing property ID.")
-      setLoading(false)
-      return
-    }
+    if (!id) return
 
-    let cancelled = false
-
-    async function loadProperty() {
-      setLoading(true)
-      setError(null)
+    async function fetchProperties() {
       try {
-        // Temporary mock while backend is down
-        await new Promise((resolve) => setTimeout(resolve, 300))
+        setLoading(true)
+        setError(null)
 
-        const mockProperty: EditableProperty = {
-          id: "1",
-          title: "Sunny Studio near Campus",
-          description: "Bright room with desk and fast Wi-Fi.",
-          propertyType: "Apartment",
-          province: "Western Cape",
-          town: "Cape Town",
-          suburb: "Rondebosch",
-          address: "12 Main Road",
-          bedrooms: 2,
-          bathrooms: 1,
-          availableRooms: 1,
-          monthlyRent: 6500,
-          deposit: 6500,
-          utilitiesIncluded: true,
-          genderPreference: "Mixed",
-          studentFriendly: true,
-          nsfasAccepted: true,
-          amenities: ["Wi-Fi", "Study Desk"],
-          rules: ["No smoking"],
-          parking: true,
-          furnished: true,
-          availableFrom: "2026-12-01",
-          images: [{ url: "https://placehold.co/600x400?text=Property+1" }],
-        }
+        const res = await api.get(`/properties/${id}`)
 
-        if (!cancelled) {
-          setProperty(mockProperty)
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(
-            err instanceof Error ? err.message : "Failed to load property."
-          )
-        }
+        setProperty(res.data.data)
+        // setProperties(res.data.data)
+      } catch (error) {
+        console.error("Error fetching properties:", error)
+        setError("Failed to load properties.")
       } finally {
-        if (!cancelled) {
-          setLoading(false)
-        }
+        setLoading(false)
       }
     }
-    loadProperty()
 
-    return () => {
-      cancelled = true
-    }
+    fetchProperties()
   }, [id])
 
   const initialData = useMemo<Partial<PropertyFormValues> | undefined>(() => {
@@ -110,9 +71,9 @@ export default function EditProperty() {
       monthlyRent: property.monthlyRent ?? 0,
       deposit: property.deposit ?? 0,
       utilitiesIncluded: property.utilitiesIncluded ?? false,
-      genderPreference: property.genderPreference ?? "Mixed",
+      genderPreferences: property.genderPreferences ?? "Mixed",
       studentFriendly: property.studentFriendly ?? true,
-      nsfasAccepted: property.nsfasAccepted ?? false,
+      nsfasAccredited: property.nsfasAccredited ?? false,
       amenities: property.amenities ?? [],
       rules: property.rules ?? [],
       parking: property.parking ?? false,
@@ -131,24 +92,32 @@ export default function EditProperty() {
     images: File[],
     removedImages: string[]
   ) {
-    if (!id) return
-
     const formData = new FormData()
+
     formData.append("data", JSON.stringify(data))
 
     images.forEach((image) => {
       formData.append("images", image)
     })
 
-    removedImages.forEach((image) => {
-      formData.append("removedImages", image)
-    })
+    formData.append("removedImages", JSON.stringify(removedImages))
 
-    // Connect your update mutation here.
-    // await updatePropertyMutation.mutateAsync({ id, formData })
-    console.log("Updating property:", id)
+    try {
+      // setSaving(true)
+
+      const res = await api.patch(`/properties/${id}`, formData)
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      console.log("Property updated successfully:", res.data)
+
+      return res.data.data
+    } catch (error) {
+      console.error("Update failed:", error)
+
+      throw error
+    } finally {
+      // setSaving(false)
+    }
   }
-
   if (loading) {
     return (
       <main className="container mx-auto px-4 py-8">
@@ -176,6 +145,7 @@ export default function EditProperty() {
 
       <PropertyForm
         mode="edit"
+        // saving={saving}
         initialData={initialData}
         existingImages={existingImages}
         onSave={handleUpdate}
