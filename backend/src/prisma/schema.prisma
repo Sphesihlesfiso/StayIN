@@ -43,7 +43,7 @@ model Property {
   description       String
 
  
-  monthlyRent     Decimal           @db.Decimal(10, 2)
+  monthlyRent       Decimal           @db.Decimal(10, 2)
   deposit           Decimal?          @db.Decimal(10, 2)
   nsfasAccredited   Boolean           @default(false)
   utilitiesIncluded Boolean           @default(true) 
@@ -66,9 +66,15 @@ model Property {
   
   rules             String[]
   amenities         String[]
+  images            String[]
   //nearbyPlaces      NearbyPlace[]
   user              User              @relation(fields: [landlordId], references: [id])
 }
+// model Image {
+//   imageId Int @id @default(autoincrement())
+//   id String
+//   variants String[]
+// }
 
 model User {
   id       Int        @id @default(autoincrement())

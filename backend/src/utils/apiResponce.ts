@@ -1,3 +1,10 @@
+
+/**
+ * Functions for succsess/Error responces and validation
+ * @param data -Data that gave an error
+ * @param message:string-The error or succsecc message
+ */
+
 export const successResponse = (data: unknown, message = "Success") => ({
   success: true,
   message,

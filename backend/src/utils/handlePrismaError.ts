@@ -1,5 +1,10 @@
 import { AppError } from "../errors/errors";
 import { Prisma } from "@prisma/client";
+/**
+ *Handles Prisma error
+ *@param error -The prisma error 
+ *@throws Console logs a db error and throws it along its prisma code.
+ */
 
 export const handlePrismaError = (error: unknown):never => {
    console.error("Prisma Error:", error);
@@ -8,9 +13,3 @@ export const handlePrismaError = (error: unknown):never => {
     }
     throw new Error("Database error");
   };
-  // elif (error instanceof Prisma.PrismaClientValidationError) {
-  
-  //   throw new  Error("Invalid data provided", 400);
-  // }
-  // throw new AppError("Internal server error", 500);
-

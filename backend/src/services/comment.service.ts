@@ -1,7 +1,8 @@
+/*
 import {
   CreateCommentInput,
   UpdateCommentInput,
-} from "../../schema/comment.schema";
+} from "@shared/schema/comment.schema";
 import prisma from "../config/db";
 import { handlePrismaError } from "../utils/handlePrismaError";
 
@@ -47,3 +48,4 @@ export const updateComment = async (id: number, data: UpdateCommentInput) => {
     throw handlePrismaError(error);
   }
 };
+*/
