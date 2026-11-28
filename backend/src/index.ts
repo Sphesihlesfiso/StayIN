@@ -8,11 +8,11 @@ import cors from "cors";
 import homeRoutes from "./routes/home.routes";
 import propertyRoutes from "./routes/property.routes";
 // import commentsRoutes from "./routes/comment.routes";
-// import authRoutes from "./routes/auth.routes";
-// import loginRoutes from "./routes/auth.routes";
+import authRoutes from "./routes/auth.routes";
+
 import userRoutes from "./routes/user.routes"
 import { errorHandler } from "./middleware/errorHandler.error";
-
+import cookieParser from "cookie-parser"
 
 const Port = process.env.PORT || 3000;
 const app = express();
@@ -20,14 +20,15 @@ app.use(cors({allowedHeaders:"*",
       origin:"http://localhost:5173",
       credentials:false
 }))
+app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // app.use("/", homeRoutes);
 app.use("/properties", propertyRoutes);
-// app.use("/login", loginRoutes);
 
-// app.use("/auth", authRoutes);
+
+app.use("/auth", authRoutes);
 app.use("/user",userRoutes)
 // app.use(errorHandler);
 app.listen(Port, () => {
